@@ -1,11 +1,12 @@
-<?php 
-?>
-
-<html>
 <head>
-    <title>My PHP Application</title>     
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/custom_style.css"> 
 </head>
-<body>
-   <p>Hello World!</p>
-</body>
-</html>
+<?php 
+require_once __DIR__ . '/../src/Views/Header.php';
+?>
+<main>
+</main>
+<?php 
+require_once __DIR__ . '/../src/Views/Footer.php';
+?>
