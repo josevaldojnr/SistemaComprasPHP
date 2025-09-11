@@ -14,8 +14,8 @@
                         <a href="/purchases">Compras</a>
                     </div>
                     <div>
-                        <a href="/userLogout">Sair</a>
-                        <a href="/userProfile">Perfil</a>
+                        <a href="/logout">Sair</a>
+                        <a href="/profile">Perfil</a>
                     </div>
                 </div>
                 </div>    

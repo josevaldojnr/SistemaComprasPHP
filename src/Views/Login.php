@@ -25,7 +25,7 @@ unset($_SESSION['login_erro']);
       </div>
     <?php endif; ?>
 
-    <form method="POST" action="login" class="space-y-5">
+    <form method="POST" action="/login" class="space-y-5">
       <div>
         <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Usuário</label>
         <input type="text" id="username" name="username" required
