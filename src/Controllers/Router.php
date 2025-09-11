@@ -9,9 +9,6 @@ class Router {
    public function showDashboard(): void {
        require __DIR__ . '/../Views/Dashboard.php';
    }
-    public function LoginForm(): void {
-        require __DIR__ . '/../Views/Login.php';
-    }
 
     public function login(): bool {
         if (session_status() !== PHP_SESSION_ACTIVE) {
