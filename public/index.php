@@ -1,6 +1,6 @@
 <?php 
 require_once __DIR__ . '/../src/Controllers/Router.php';
-require_once __DIR__ . '/../src/Controllers/UserController.php';    
+require_once __DIR__ . '/../src/Controllers/UserController.php';
 session_start();
 
 $router = new Router();
@@ -49,7 +49,17 @@ switch ($path) {
     case '/purchases':
         echo "Purchases page";
         break;
-
+    case '/register':
+        if(!empty($_SESSION['user'])){
+            header('Location: /dashboard');
+            exit;
+        }
+        if ($method === 'POST') {
+            $user->register();
+        } else {
+            $router->showRegister();
+        }
+        break;
     default:
         http_response_code(404);
         echo "Página não encontrada!";

@@ -10,5 +10,7 @@ class Router {
        require __DIR__ . '/../Views/Dashboard.php';
    }
 
-  
+   public function showRegister(): void {
+       require __DIR__ . '/../Views/Register.php';
+   }
 }
