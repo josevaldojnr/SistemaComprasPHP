@@ -1,5 +1,5 @@
 <?php
-
+require_once __DIR__ . '/DatabaseController.php';
 class Router {
 
     public function showLogin(): void {
@@ -14,11 +14,18 @@ class Router {
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
         }
-
+        
         $user = $_POST['username'] ?? '';
         $pass = $_POST['password'] ?? '';
 
-        if ($user === 'admin' && $pass === '123') {
+        $connector = new DatabaseController('0.0.0.0:3306', 'root', '', 'sistema_compras');
+        $statement = $connector->getConnection()->prepare("SELECT * FROM users WHERE name = ? AND password = ?");
+        $statement->bind_param("ss", $user, $pass);
+        $statement->execute();
+        $queryResult = $statement->get_result();
+                
+
+        if ($queryResult->num_rows > 0) {
             $_SESSION['user'] = $user;
             $_SESSION['is_auth'] = true;  
             session_regenerate_id(true);
