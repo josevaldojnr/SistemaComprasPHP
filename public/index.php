@@ -1,8 +1,10 @@
 <?php 
 require_once __DIR__ . '/../src/Controllers/Router.php';
+require_once __DIR__ . '/../src/Controllers/UserController.php';    
 session_start();
 
 $router = new Router();
+$user = new User();
 
 $path = $_SERVER['REQUEST_URI'] ?? '/';
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -18,22 +20,26 @@ switch ($path) {
         break;
     case '/':
         if($method ==="POST"){
-            $router->login();
+            $user=$user->login();
             exit;
         }
         header('Location: /dashboard');
 
         break;
    case '/login':
+    if(!empty($_SESSION['user'])){
+        header('Location: /dashboard');
+        exit;
+    }
     if ($method === 'POST') {
-        $router->login();
+        $user=$user->login();
     } else {
         $router->showLogin();
     }
     break;
 
     case '/logout':   
-        $router->logout();
+        $user->logout();
         break;
 
     case '/products':
