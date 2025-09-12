@@ -4,7 +4,8 @@ require_once __DIR__ . '/../src/Controllers/UserController.php';
 session_start();
 
 $router = new Router();
-$user = new User();
+$userController = new UserController();
+
 
 $path = $_SERVER['REQUEST_URI'] ?? '/';
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -32,14 +33,14 @@ switch ($path) {
         exit;
     }
     if ($method === 'POST') {
-        $user=$user->login();
+        $user=$userController->login();
     } else {
         $router->showLogin();
     }
     break;
 
     case '/logout':   
-        $user->logout();
+        $userController->logout();
         break;
 
     case '/products':
@@ -55,7 +56,7 @@ switch ($path) {
             exit;
         }
         if ($method === 'POST') {
-            $user->register();
+            $userController->register();
         } else {
             $router->showRegister();
         }
