@@ -12,12 +12,13 @@ class UserController {
         $email = trim($_POST['email']) ?? '';
         $pass = $_POST['password'] ?? '';
 
-        $connector = new DatabaseController('0.0.0.0:3306', 'root', '', 'sistema_compras');
+        $connector = new DatabaseController();
         $statement = $connector->getConnection()->prepare('SELECT * FROM users WHERE email = ? AND is_active = 1');
         $statement->bind_param('s', $email);
         $statement->execute();
         $queryResult = $statement->get_result();
         $userData = $queryResult->fetch_assoc();
+        $connector->closeConnection();
                 
 
           if ($userData && password_verify($pass, $userData['password'])) {
@@ -68,7 +69,7 @@ class UserController {
         }
 
         $hashedPass = password_hash($pass, PASSWORD_BCRYPT);
-        $connector = new DatabaseController('0.0.0.0:3306', 'root', '', 'sistema_compras');
+        $connector = new DatabaseController();
 
 
         $checkUserStatement = $connector->getConnection()->prepare('SELECT id FROM users WHERE email = ?');
@@ -82,15 +83,18 @@ class UserController {
         }
 
         $includeStatement = $connector->getConnection()->prepare('INSERT INTO users (name, email, password, role_id, is_active) VALUES (?, ?, ?, 1,1)');
-        $includeStatement->bind_param('sss', $user, $email, $hashedPass );  
+        $includeStatement->bind_param('sss', $user, $email, $hashedPass ); 
+      
         
         if($includeStatement->execute()){
             $_SESSION['register_success'] = "Usuário registrado com sucesso. Faça login.";
             header('Location: /login');
+            $connector->closeConnection();
             exit;
         } else {
             $_SESSION['register_erro'] = "Erro ao registrar usuário. Tente novamente.";
             header('Location: /register');
+            $connector->closeConnection();
             exit;
         }      
     }

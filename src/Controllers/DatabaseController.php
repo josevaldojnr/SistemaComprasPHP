@@ -1,9 +1,13 @@
 <?php
 class DatabaseController {
     private $dbConnection;
+    private $host = '0.0.0.0:3306';
+    private $username='root';
+    private $password='';
+    private $dbname='sistema_compras';
 
-    public function __construct($host, $username, $password, $dbname) {
-        $this->dbConnection = new mysqli($host, $username, $password, $dbname);
+    public function __construct() {
+        $this->dbConnection = new mysqli($this->host, $this->username, $this->password, $this->dbname);
         if ($this->dbConnection->connect_error) {
             throw new Exception("Connection failed: " . $this->dbConnection->connect_error);
         }
