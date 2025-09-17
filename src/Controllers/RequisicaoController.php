@@ -7,7 +7,7 @@ require_once __DIR__ . '/DatabaseController.php';
         public function openRequest(User $user): void {
             $db = new DatabaseController();
             $connection = $db->getConnection(); 
-            $statement = $connection->prepare('INSERT INTO requisicao(requestor_id, ,total_cost,status_id) VALUES (?,?,?,?,?,?)');
+            $statement = $connection->prepare('INSERT INTO requisicao(requestor_id, ,total_cost,status_id) VALUES (?,?,?)');
             $statement->bind_param('ifi',$user->id,$this->total_cost,1);
             $statement->execute();
             $this->id=$connection->insert_id;
