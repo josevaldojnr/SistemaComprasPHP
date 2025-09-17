@@ -8,27 +8,25 @@
     //6 = cancelado
     //7 = finalizado 
 
-
+require_once __DIR__ . '/User.php';
     class Requisicao{
         public int $id;
         public int $requestor_id;
         public int $pricing_id;
-        public int $purchasing_id;
+        public int $buyer_id;
         public int $manager_id;
         public int $total_cost;
-        public int $status;
-        public string $created_at;
+        public int $status_id;
 
-         public function __construct($queryResult=null) {
+         public function __construct($queryResult=null, User $user) {
             if(!is_array($queryResult)) {
                 $this->id = 0;
-                $this->requestor_id = 0;
+                $this->requestor_id = $user->id;
                 $this->pricing_id = 0;
                 $this->purchasing_id = 0;
                 $this->manager_id = 0;
                 $this->total_cost = 0;
-                $this->status = 0;
-                $this->created_at = '';
+                $this->status_id = 0;
                 return;
             }
             $this->id = $queryResult['id'];
@@ -37,57 +35,56 @@
             $this->purchasing_id = $queryResult['purchasing_id'];
             $this->manager_id = $queryResult['manager_id'];
             $this->total_cost = $queryResult['total_cost'];
-            $this->status = $queryResult['status'];
-            $this->created_at = $queryResult['created_at'];
+            $this->status_id = $queryResult['status_id'];
     }
 
     public function isRequested(): bool {
-        if($this->status>7 || $this->status<1){
+        if($this->status_id>7 || $this->status_id<1){
              throw new Exception("Status Desconhecido");
         }
-        return $this->status === 1;
+        return $this->status_id === 1;
     }
 
     public function isPriced():bool{
-         if($this->status>7 || $this->status<1){
+         if($this->status_id>7 || $this->status_id<1){
              throw new Exception("Status Desconhecido");
         }
-        return $this->status === 2;
+        return $this->status_id === 2;
     }
 
     public function isOrderCreated():bool{
-         if($this->status>7 || $this->status<1){
+         if($this->status_id>7 || $this->status_id<1){
              throw new Exception("Status Desconhecido");
         }
-        return $this->statys === 3;
+        return $this->status_id === 3;
     }
 
     public function isApproved():bool{
-         if($this->status>7 || $this->status<1){
+         if($this->status_id>7 || $this->status_id<1){
              throw new Exception("Status Desconhecido");
         }
-        return $this->status === 4;
+        return $this->status_id === 4;
     }
 
     public function isRejected():bool{
-         if($this->status>7 || $this->status<1){
+         if($this->status_id>7 || $this->status_id<1){
              throw new Exception("Status Desconhecido");
         }
-        return $this->status === 5;
+        return $this->status_id === 5;
     }
 
     public function isCanceled():bool{
-         if($this->status>7 || $this->status<1){
+         if($this->status_id>7 || $this->status_id<1){
              throw new Exception("Status Desconhecido");
         }
-        return $this->status === 6;
+        return $this->status_id === 6;
     }
 
     public function isFinished(){
-         if($this->status>7 || $this->status<1){
+         if($this->status_id>7 || $this->status_id<1){
              throw new Exception("Status Desconhecido");
         }
-        return $this->status === 7;
+        return $this->status_id === 7;
     }
 
 }

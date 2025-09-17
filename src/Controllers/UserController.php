@@ -4,7 +4,7 @@ require_once __DIR__ . '/DatabaseController.php';
 
 class UserController {
 
-        public function login(): User {
+    public function login(): User {
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
         }
@@ -12,13 +12,13 @@ class UserController {
         $email = trim($_POST['email']) ?? '';
         $pass = $_POST['password'] ?? '';
 
-        $connector = new DatabaseController();
-        $statement = $connector->getConnection()->prepare('SELECT * FROM users WHERE email = ? AND is_active = 1');
+        $db = new DatabaseController();
+        $statement = $db->getConnection()->prepare('SELECT * FROM users WHERE email = ? AND is_active = 1');
         $statement->bind_param('s', $email);
         $statement->execute();
         $queryResult = $statement->get_result();
         $userData = $queryResult->fetch_assoc();
-        $connector->closeConnection();
+        $db->closeConnection();
                 
 
           if ($userData && password_verify($pass, $userData['password'])) {
@@ -69,32 +69,32 @@ class UserController {
         }
 
         $hashedPass = password_hash($pass, PASSWORD_BCRYPT);
-        $connector = new DatabaseController();
+        $db = new DatabaseController();
 
 
-        $checkUserStatement = $connector->getConnection()->prepare('SELECT id FROM users WHERE email = ?');
-        $checkUserStatement->bind_param('s', $email);
-        $checkUserStatement->execute();
-        $queryUser = $checkUserStatement->get_result();
+        $connector = $db->getConnection()->prepare('SELECT id FROM users WHERE email = ?');
+        $connector->bind_param('s', $email);
+        $connector->execute();
+        $queryUser = $connector->get_result();
         if($queryUser->num_rows > 0){
             $_SESSION['register_erro'] = "Email já estão em uso";
             header('Location: /register');
             exit;
         }
 
-        $includeStatement = $connector->getConnection()->prepare('INSERT INTO users (name, email, password, role_id, is_active) VALUES (?, ?, ?, 1,1)');
+        $includeStatement = $db->getConnection()->prepare('INSERT INTO users (name, email, password, role_id, is_active) VALUES (?, ?, ?, 1,1)');
         $includeStatement->bind_param('sss', $user, $email, $hashedPass ); 
       
         
         if($includeStatement->execute()){
             $_SESSION['register_success'] = "Usuário registrado com sucesso. Faça login.";
             header('Location: /login');
-            $connector->closeConnection();
+            $db->closeConnection();
             exit;
         } else {
             $_SESSION['register_erro'] = "Erro ao registrar usuário. Tente novamente.";
             header('Location: /register');
-            $connector->closeConnection();
+            $db->closeConnection();
             exit;
         }      
     }
