@@ -4,130 +4,130 @@ require_once __DIR__ . '/DatabaseController.php';
     class RequisicaoController {
 
 
-        public function openRequest(User $user): void {
+        public function openRequest(User $user, Requisicao $request): void {
             $db = new DatabaseController();
             $connection = $db->getConnection(); 
             $statement = $connection->prepare('INSERT INTO requisicao(requestor_id, ,total_cost,status_id) VALUES (?,?,?)');
-            $statement->bind_param('ifi',$user->id,$this->total_cost,1);
+            $statement->bind_param('idi',$user->id,$request->total_cost,1);
             $statement->execute();
-            $this->id=$connection->insert_id;
+            $request->id=$connection->insert_id;
             $connection->close();
-            $this->requestor_id=$user->id;
-            $this->status_id=1;
+            $request->requestor_id=$user->id;
+            $request->status_id=1;
         }
 
-        public function updateRequestPricer(User $user): void {
+        public function updateRequestPricer(User $user, Requisicao $request): void {
             $db = new DatabaseController();
             $connection = $db->getConnection(); 
             $statement = $connection->prepare("UPDATE requisicao SET pricing_id = ?, status_id = ? WHERE id = ?");
-            $statement->bind_param('iii',$user->id,$this->id, 2);
+            $statement->bind_param('iii',$user->id,$request->id, 2);
             $statement->execute();
             $connection->close();
-            $this->pricing_id=$user->id;
-            $this->status_id=2;
+            $request->pricing_id=$user->id;
+            $request->status_id=2;
         }
 
-        public function updateRequestBuyer(User $user): void {
+        public function updateRequestBuyer(User $user, Requisicao $request): void {
             $db = new DatabaseController();
             $connection = $db->getConnection(); 
             $statement = $connection->prepare("UPDATE requisicao SET compras_id = ?, status_id = ? WHERE id = ?");
-            $statement->bind_param('iii',$user->id,$this->id, 3);
+            $statement->bind_param('iii',$user->id,$request->id, 3);
             $statement->execute();
             $connection->close();
-            $this->buyer_id=$user->id;
-            $this->status_id=3;
+            $request->buyer_id=$user->id;
+            $request->status_id=3;
         }
 
-         public function approveRequest(User $user): void {
+         public function approveRequest(User $user, Requisicao $request): void {
             $db = new DatabaseController();
             $connection = $db->getConnection(); 
             $statement = $connection->prepare("UPDATE requisicao SET gerente_id = ?, status_id = ?  WHERE id = ?");
-            $statement->bind_param('iii',$user->id,$this->id,4);
+            $statement->bind_param('iii',$user->id,$request->id,4);
             $statement->execute();
             $connection->close();
-            $this->manager_id=$user->id;
-            $this->status_id=4;
+            $request->manager_id=$user->id;
+            $request->status_id=4;
         }
 
-        public function rejectRequest(User $user): void {
+        public function rejectRequest(User $user, Requisicao $request): void {
             $db = new DatabaseController();
             $connection = $db->getConnection(); 
             $statement = $connection->prepare("UPDATE requisicao SET gerente_id = ?, status_id = ? WHERE id = ?");
-            $statement->bind_param('iii',$user->id,5,$this->id);
+            $statement->bind_param('iii',$user->id,5,$request->id);
             $statement->execute();
             $connection->close();
-            $this->manager_id=$user->id;
-            $this->status_id=5;
+            $request->manager_id=$user->id;
+            $request->status_id=5;
         }
 
-            public function cancelRequest(): void {
+            public function cancelRequest(Requisicao $request): void {
             $db = new DatabaseController();
             $connection = $db->getConnection(); 
             $statement = $connection->prepare("UPDATE requisicao SET status_id = ? WHERE id = ?");
-            $statement->bind_param('ii',6,$this->id);
+            $statement->bind_param('ii',6,$request->id);
             $statement->execute();
             $connection->close();
-            $this->status_id=6;
+            $request->status_id=6;
         }
 
-        public function finishRequest(): void {
+        public function finishRequest(Requisicao $request): void {
             $db = new DatabaseController();
             $connection = $db->getConnection(); 
             $statement = $connection->prepare("UPDATE requisicao SET status_id = ? WHERE id = ?");
-            $statement->bind_param('ii',7,$this->id);
+            $statement->bind_param('ii',7,$request->id);
             $statement->execute();
             $connection->close();
-            $this->status_id=7;
+            $request->status_id=7;
         }
         
 
-        public function updateRequestStatus (int $status_id, User $user):void{
+        public function updateRequestStatus (int $status_id, User $user, Requisicao $request):void{
             switch($status){
                 case 1:
-                    if($user->role_id > 0 && $user->role_id<6){
-                        openRequest($user);
+                    if($user->isRequisitante()){
+                        openRequest($user, $request);
                     }else{
                         throw new Exception('ERRO U001 : Usuário sem role definida');
                     }
                 break;
                 case 2:
-                    if(($user->role_id = 2 && $this->status=1)|| $user->role_id = 5 ){
-                        updateRequestPricer($user);
+                    if(($user->isPricing() && $request->isRequested())|| $user->isAdmin() ){
+                        updateRequestPricer($user, $request);
                     }else{
                         throw new Exception('ERRO R001: Usuário sem permissão ou Requisição fora do status previsto -Requisitado-');
                     }
                 break;
                 case 3:
-                    if(($user->role_id = 3 && $this->status=2)|| $user->role_id = 5){
-                        updateRequestBuyer($user);
+                    if(($user->isCompras() && $request->isPriced())|| $user->isAdmin()){
+                        updateRequestBuyer($user, $request);
                     }else{
                         throw new Exception('ERRO R002: Usuário sem permissão ou Requisição fora do status previsto -Precificado-');
                     }
                 break;
                 case 4:
-                    if(($user->role_id = 4 && $this->status=3)|| $user->role_id = 5){
-                        approveRequest($user);
+                    if(($user->isGerente() && $request->isOrdered())|| $user->isAdmin()){
+                        approveRequest($user, $request);
                     }else{
                         throw new Exception('ERRO R003: Usuário sem permissão ou Requisição fora do status previsto -Pedido de Compra Gerado-');
                     }
                 break;
                 case 5:
-                    if(($user->role_id = 4)|| $user->role_id = 5){
-                        rejectRequest($user);
+                    if($user->isGerente()|| $user->isAdmin()){
+                        rejectRequest($user, $request);
                     }else {
                         throw new Exception('ERRO R101: Usuário sem permissão');
                     }                    
                 break;
                 case 6:
-                    if (($this->requestor_id=$user->id)|| $user->role_id = 5){
-                        cancelRequest();
+                    if (($request->requestor_id=$user->id)|| $user->isAdmin()){
+                        cancelRequest($request);
                     }else{
                         throw new Exception('ERRO R004: Requisição não pertence ao usuário');
                     }
                 break;
                 case 7:
-                    if(($this->requestor_id=$user->id && $this->status_id=4 )|| $user->role_id = 5){
-                        finishRequest();
+                    if(($request->requestor_id=$user->id && $request->isApproved()) || $user->isAdmin()){
+                        finishRequest($request);
                     }else{
                         throw new Exception('ERRO R004: Requisição não pertence ao usuário');
                     }
