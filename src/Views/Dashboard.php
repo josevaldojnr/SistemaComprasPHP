@@ -7,6 +7,8 @@ if (session_status() !== PHP_SESSION_ACTIVE){
 if (empty($_SESSION['user'])){
     exit;
 }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -22,6 +24,7 @@ if (empty($_SESSION['user'])){
 
     <main>
         <h1>Bem-vindo, <?= htmlspecialchars($_SESSION['user']); ?></h1>
+        <?php require __DIR__ . '/Components/AllRequests.php'; ?>
     </main>
 
     <?php require __DIR__ . '/Footer.php'; ?>

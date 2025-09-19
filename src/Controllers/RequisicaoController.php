@@ -91,21 +91,21 @@ require_once __DIR__ . '/DatabaseController.php';
                     }
                 break;
                 case 2:
-                    if(($user->isPricing() && $request->isRequested())|| $user->isAdmin() ){
+                    if(($user->isPricing() && $request->isRequested()) || $user->isAdmin() ){
                         $this->updateRequestPricer($user, $request);
                     }else{
                         throw new Exception('ERRO R001: Usuário sem permissão ou Requisição fora do status previsto -Requisitado-');
                     }
                 break;
                 case 3:
-                    if(($user->isCompras() && $request->isPriced())|| $user->isAdmin()){
+                    if(($user->isCompras() && $request->isPriced()) || $user->isAdmin()){
                         $this->updateRequestBuyer($user, $request);
                     }else{
                         throw new Exception('ERRO R002: Usuário sem permissão ou Requisição fora do status previsto -Precificado-');
                     }
                 break;
                 case 4:
-                    if(($user->isGerente() && $request->isOrdered())|| $user->isAdmin()){
+                    if(($user->isGerente() && $request->isOrdered()) || $user->isAdmin()){
                         $this->approveRequest($user, $request);
                     }else{
                         throw new Exception('ERRO R003: Usuário sem permissão ou Requisição fora do status previsto -Pedido de Compra Gerado-');
@@ -119,7 +119,7 @@ require_once __DIR__ . '/DatabaseController.php';
                     }                    
                 break;
                 case 6:
-                    if (($request->requestor_id == $user->id)|| $user->isAdmin()){
+                    if (($request->requestor_id == $user->id) || $user->isAdmin()){
                         $this->cancelRequest($request);
                     }else{
                         throw new Exception('ERRO R004: Requisição não pertence ao usuário');

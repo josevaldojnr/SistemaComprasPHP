@@ -2,7 +2,7 @@
     //STATUS
     //1 = requisitado
     //2 = precificado
-    //3 = pedido de compra gerado
+    //3 = pedido gerado
     //4 = aprovado
     //5 = rejeitado
     //6 = cancelado
@@ -18,7 +18,7 @@ require_once __DIR__ . '/User.php';
         public int $total_cost;
         public int $status_id;
 
-         public function __construct($queryResult=null, User $user) {
+         public function __construct($queryResult=null, User $user=null) {
             if(!is_array($queryResult)) {
                 $this->id = 0;
                 $this->requestor_id = $user->id;
@@ -27,15 +27,57 @@ require_once __DIR__ . '/User.php';
                 $this->manager_id = 0;
                 $this->total_cost = 0;
                 $this->status_id = 0;
+                $this->requestor_name = '';
+                $this->status_name = '';
                 return;
             }
             $this->id = $queryResult['id'];
             $this->requestor_id = $queryResult['requestor_id'];
-            $this->pricing_id = $queryResult['pricing_id'];
-            $this->purchasing_id = $queryResult['purchasing_id'];
-            $this->manager_id = $queryResult['manager_id'];
+            $this->pricing_id = $queryResult['pricing_id'] ?? 0;
+            $this->purchasing_id = $queryResult['purchasing_id']?? 0;
+            $this->manager_id = $queryResult['manager_id']?? 0;
             $this->total_cost = $queryResult['total_cost'];
             $this->status_id = $queryResult['status_id'];
+            $this->status_name = $queryResult['status_name'];
+            $this->requestor_name = $queryResult['requestor_name'];
+    }
+
+    public static function getAll():array{
+        $db = new DatabaseController();
+        $connection=$db->getConnection();
+        $result=$connection->query("SELECT 
+                                        r.id, 
+                                        r.requestor_id, 
+                                        u.name as requestor_name,
+                                        r.total_cost, 
+                                        r.status_id,
+                                        CASE r.status_id
+                                            WHEN 1 THEN 'Requisitado'
+                                            WHEN 2 THEN 'Precificado'
+                                            WHEN 3 THEN 'Pedido Gerado'
+                                            WHEN 4 THEN 'Aprovado'
+                                            WHEN 5 THEN 'Recusado'
+                                            WHEN 6 THEN 'Cancelado'
+                                            WHEN 7 THEN 'Finalizado'
+                                            ELSE 'Desconhecido'
+                                        END as status_name
+                                    FROM requisicao r 
+                                    JOIN users u ON r.requestor_id = u.id");
+
+        $requests=[];
+        while ($row = $result->fetch_assoc()){
+            $requests[] = new Requisicao($row);
+        }
+        $connection->close();
+        return $requests;
+    }
+
+    public function getAllbyUser(int $user_id):array{
+
+    }
+
+    public function getAllbyStatus(int $status_id):array{
+
     }
 
     public function isRequested(): bool {
@@ -52,7 +94,7 @@ require_once __DIR__ . '/User.php';
         return $this->status_id === 2;
     }
 
-    public function isOrderCreated():bool{
+    public function isOrdered():bool{
          if($this->status_id>7 || $this->status_id<1){
              throw new Exception("Status Desconhecido");
         }
