@@ -17,6 +17,21 @@ CREATE TABLE users (
   CONSTRAINT fk_users_role FOREIGN KEY (role_id) REFERENCES roles(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE requisicao (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    requestor_id BIGINT,
+    pricing_id BIGINT NULL,
+    buyer_id BIGINT NULL,
+    manager_id BIGINT NULL,
+    total_cost DECIMAL(6,2),
+    status_id INT,
+    FOREIGN KEY (requestor_id) REFERENCES users(id),
+    FOREIGN KEY (pricing_id) REFERENCES users(id),
+    FOREIGN KEY (buyer_id) REFERENCES users(id),
+    FOREIGN KEY (manager_id) REFERENCES users(id)
+);
+
+
 INSERT INTO roles (name) VALUES
   ('requisitante'),
   ('pricing'),
