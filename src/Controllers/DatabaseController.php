@@ -3,7 +3,7 @@ class DatabaseController {
     private $dbConnection;
     private $host = '0.0.0.0:3306';
     private $username='root';
-    private $password='';
+    private $password='minhasenha123';
     private $dbname='sistema_compras';
 
     public function __construct() {

@@ -6,11 +6,20 @@ session_start();
 $router = new Router();
 $userController = new UserController();
 
-
-$path = $_SERVER['REQUEST_URI'] ?? '/';
+$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '/';
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 switch ($path) {
+
+    case '/':
+        if (!empty($_SESSION['user'])) {
+            require __DIR__ . '/../src/Views/Layout.php';
+        } else {
+            header('Location: /login');
+            exit;
+        }
+        break;
+
     case '/dashboard':
         if (!empty($_SESSION['user'])) {
             $router->showDashboard();
@@ -19,27 +28,38 @@ switch ($path) {
             exit;
         }
         break;
-    case '/':
-        if($method ==="POST"){
-            $user=$user->login();
+        
+    case '/users':
+        if (!empty($_SESSION['user'])) {
+            $router->showUsers();
+        } else {
+            header('Location: /login');
             exit;
         }
-        header('Location: /dashboard');
-
         break;
-   case '/login':
-    if(!empty($_SESSION['user'])){
-        header('Location: /dashboard');
-        exit;
-    }
-    if ($method === 'POST') {
-        $user=$userController->login();
-    } else {
-        $router->showLogin();
-    }
-    break;
 
-    case '/logout':   
+    case '/nova-solicitacao':
+        if (!empty($_SESSION['user'])) {
+            $router->showNovaSolicitacao();
+        } else {
+            header('Location: /login');
+            exit;
+        }
+        break;
+
+    case '/login':
+        if (!empty($_SESSION['user'])) {
+            header('Location: /');
+            exit;
+        }
+        if ($method === 'POST') {
+            $userController->login();
+        } else {
+            $router->showLogin();
+        }
+        break;
+
+    case '/logout':
         $userController->logout();
         break;
 
@@ -50,9 +70,10 @@ switch ($path) {
     case '/purchases':
         echo "Purchases page";
         break;
+
     case '/register':
-        if(!empty($_SESSION['user'])){
-            header('Location: /dashboard');
+        if (!empty($_SESSION['user'])) {
+            header('Location: /');
             exit;
         }
         if ($method === 'POST') {
@@ -61,9 +82,48 @@ switch ($path) {
             $router->showRegister();
         }
         break;
+    case '/setores':
+        if (!empty($_SESSION['user'])) {
+            $router->showSetores();
+        } else {
+            header('Location: /login');
+            exit;
+        }
+        break;
+    case '/itens':
+        if (!empty($_SESSION['user'])) {
+            $router->showItens();
+        } else {
+            header('Location: /login');
+            exit;
+        }
+        break;
+    case '/categorias':
+        if (!empty($_SESSION['user'])) {
+            $router->showCategorias();
+        } else {
+            header('Location: /login');
+            exit;
+        }
+        break;
+    case '/condicao-pagamento':
+        if (!empty($_SESSION['user'])) {
+            $router->showCondicao();
+        } else {
+            header('Location: /login');
+            exit;
+        }
+        break;
+    case '/fornecedores':
+        if (!empty($_SESSION['user'])) {
+            $router->showFornecedores();
+        } else {
+            header('Location: /login');
+            exit;
+        }
+        break;
+        
     default:
         http_response_code(404);
         echo "Página não encontrada!";
 }
-
-?>

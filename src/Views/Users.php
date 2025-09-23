@@ -1,0 +1,55 @@
+<?php
+if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+if (empty($_SESSION['user'])) exit;
+
+$usuarios = [
+    ["id" => 1, "name" => "Admin", "email" => "admin@sisbuy.com", "role" => "admin", "is_active" => 1],
+    ["id" => 2, "name" => "João Silva", "email" => "joao@empresa.com", "role" => "requisitante", "is_active" => 1],
+    ["id" => 3, "name" => "Maria Souza", "email" => "maria@empresa.com", "role" => "compras", "is_active" => 0],
+];
+?>
+
+<h1 class="text-2xl font-bold mb-6 text-gray-800">Usuários</h1>
+
+<div class="mb-4">
+  <a href="/users/create"
+     class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+    + Novo Usuário
+  </a>
+</div>
+
+<div class="overflow-x-auto bg-white shadow-md rounded-lg">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Função</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Ações</th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+      <?php foreach ($usuarios as $user): ?>
+        <tr>
+          <td class="px-6 py-4 text-sm text-gray-700"><?= $user['id'] ?></td>
+          <td class="px-6 py-4 text-sm text-gray-700"><?= htmlspecialchars($user['name']) ?></td>
+          <td class="px-6 py-4 text-sm text-gray-700"><?= htmlspecialchars($user['email']) ?></td>
+          <td class="px-6 py-4 text-sm text-gray-700"><?= htmlspecialchars($user['role']) ?></td>
+          <td class="px-6 py-4 text-sm">
+            <?php if ($user['is_active']): ?>
+              <span class="px-2 inline-flex text-xs font-semibold rounded-full bg-green-100 text-green-800">Ativo</span>
+            <?php else: ?>
+              <span class="px-2 inline-flex text-xs font-semibold rounded-full bg-red-100 text-red-800">Inativo</span>
+            <?php endif; ?>
+          </td>
+          <td class="px-6 py-4 text-sm text-right space-x-2">
+            <a href="/users/edit?id=<?= $user['id'] ?>" class="text-indigo-600 hover:text-indigo-900">Editar</a>
+            <a href="/users/delete?id=<?= $user['id'] ?>" class="text-red-600 hover:text-red-900">Excluir</a>
+          </td>
+        </tr>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
+</div>

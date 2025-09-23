@@ -26,7 +26,7 @@ class UserController {
             $_SESSION['is_auth'] = true;
             session_regenerate_id(true);
 
-            header('Location: /dashboard');
+            header('Location: /');
             return new User($userData);
         }
 

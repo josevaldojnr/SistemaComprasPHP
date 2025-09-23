@@ -1,32 +1,8 @@
+<?php if (session_status() !== PHP_SESSION_ACTIVE) session_start(); ?>
+<?php if (empty($_SESSION['user'])) exit; ?>
 
-<?php
+<h1 class="text-2xl font-bold mb-4">Bem-vindo, <?= htmlspecialchars($_SESSION['user']); ?> 👋</h1>
 
-if (session_status() !== PHP_SESSION_ACTIVE){
-    session_start();
-}
-if (empty($_SESSION['user'])){
-    exit;
-}
-
-
-?>
-
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    
-    <meta charset="UTF-8">
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
-</head>
-<body>
-    <?php require __DIR__ . '/Header.php'; ?>
-
-    <main>
-        <h1>Bem-vindo, <?= htmlspecialchars($_SESSION['user']); ?></h1>
-        <?php require __DIR__ . '/Components/AllRequests.php'; ?>
-    </main>
-
-    <?php require __DIR__ . '/Footer.php'; ?>
-</body>
-</html>
+<div class="space-y-4">
+  <?php require __DIR__ . '/Components/AllRequests.php'; ?>
+</div>
