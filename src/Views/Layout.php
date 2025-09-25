@@ -1,9 +1,6 @@
 <?php
 if (session_status() !== PHP_SESSION_ACTIVE) session_start();
-if (empty($_SESSION['user'])) {
-    header('Location: /login');
-    exit;
-}
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">

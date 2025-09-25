@@ -25,13 +25,13 @@ CREATE TABLE requisicao (
     pricing_id BIGINT NULL,
     buyer_id BIGINT NULL,
     manager_id BIGINT NULL,
-    total_cost DECIMAL(12,2),
+    total_cost DECIMAL(7,2),
     status_id INT,
     FOREIGN KEY (requestor_id) REFERENCES users(id),
     FOREIGN KEY (pricing_id) REFERENCES users(id),
     FOREIGN KEY (buyer_id) REFERENCES users(id),
     FOREIGN KEY (manager_id) REFERENCES users(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ;
 
 CREATE TABLE condicao_pagamentos (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -44,16 +44,7 @@ CREATE TABLE condicao_pagamentos (
 CREATE TABLE fornecedores (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     razao_social VARCHAR(255) NOT NULL,
-    fantasia VARCHAR(255) NOT NULL,
-    endereco VARCHAR(255) NOT NULL,
-    cidade VARCHAR(150) NOT NULL,
-    estado VARCHAR(50) NOT NULL,
     cnpj VARCHAR(20) NOT NULL,
-    telefone VARCHAR(50) NOT NULL,
-    contato VARCHAR(120) NOT NULL,
-    tipo VARCHAR(100) NOT NULL,
-    email VARCHAR(160) NOT NULL,
-    condicao_pagamento_id BIGINT NOT NULL,
     created_by VARCHAR(120) NOT NULL,
     updated_by VARCHAR(120) NULL,
     deleted_by VARCHAR(120) NULL,
@@ -76,36 +67,25 @@ CREATE TABLE categorias (
 
 CREATE TABLE setores (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL,
+    id_responsavel BIGINT NOT NULL,
     email_responsavel VARCHAR(160) NOT NULL,
-    teto_gestor DECIMAL(18,2) NOT NULL,
-    teto_diretoria DECIMAL(18,2) NOT NULL,
-    created_by VARCHAR(120) NOT NULL,
+    created_by BIGINT NOT NULL,
     deleted_at TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_responsavel) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE pedidos_compra (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    solicitacao_id BIGINT NOT NULL,
+    requestor_id BIGINT,
+    pricing_id BIGINT NULL,
+    buyer_id BIGINT NULL,
+    manager_id BIGINT NULL,
+    total_cost DECIMAL(7,2),
     setor_id BIGINT NOT NULL,
     fornecedor_id BIGINT NULL,
-    condicao_pagamento_id BIGINT NULL,
-    frete VARCHAR(50) NOT NULL,
-    link VARCHAR(255) NULL,
-    nivel_impacto VARCHAR(100) NOT NULL,
-    prazo_estimado TIMESTAMP NULL,
-    mes_pagamento TIMESTAMP NULL,
-    fornecedor_unico TINYINT(1) NULL,
-    descricao TEXT NULL,
-    observacao TEXT NULL,
-    observacao_comprador TEXT NULL,
-    observacao_fornecedor TEXT NULL,
-    valor_frete DECIMAL(18,4) DEFAULT 0,
-    imobilizado TINYINT(1) NULL,
-    compra_emergencial TINYINT(1) NULL,
-    status VARCHAR(50) NULL,
+    status INT NULL,
     deleted_at TIMESTAMP NULL,
     created_by BIGINT NOT NULL,
     updated_by BIGINT NULL,
@@ -118,8 +98,12 @@ CREATE TABLE pedidos_compra (
     CONSTRAINT fk_pedidos_compra_condicao_pagamento FOREIGN KEY (condicao_pagamento_id) REFERENCES condicao_pagamentos(id),
     CONSTRAINT fk_pedidos_compra_created_by FOREIGN KEY (created_by) REFERENCES users(id),
     CONSTRAINT fk_pedidos_compra_updated_by FOREIGN KEY (updated_by) REFERENCES users(id),
-    CONSTRAINT fk_pedidos_compra_deleted_by FOREIGN KEY (deleted_by) REFERENCES users(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    CONSTRAINT fk_pedidos_compra_deleted_by FOREIGN KEY (deleted_by) REFERENCES users(id),
+    FOREIGN KEY (requestor_id) REFERENCES users(id),
+    FOREIGN KEY (pricing_id) REFERENCES users(id),
+    FOREIGN KEY (buyer_id) REFERENCES users(id),
+    FOREIGN KEY (manager_id) REFERENCES users(id)
+);
 
 
 INSERT INTO roles (name) VALUES
