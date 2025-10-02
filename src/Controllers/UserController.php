@@ -26,7 +26,7 @@ class UserController {
             $_SESSION['is_auth'] = true;
             session_regenerate_id(true);
 
-            require __DIR__ . '/../src/Views/Layout.php';
+            header('Location: /dashboard');
             return new User($userData);
         }
 

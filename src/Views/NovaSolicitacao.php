@@ -9,9 +9,10 @@
         class="block w-full rounded-md border border-gray-300 bg-white text-sm py-2 px-3
                focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
         <option value="">Selecione...</option>
-        <option value="1">Financeiro</option>
-        <option value="2">TI</option>
-        <option value="3">Compras</option>
+        <option value="1">Produção</option>
+        <option value="2">Logística</option>
+        <option value="3">Administrativo</option>
+        <option value="4">TI</option>
       </select>
     </div>
 
@@ -76,26 +77,7 @@
              focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"></textarea>
   </div>
 
-  <fieldset class="rounded-md border border-gray-200 bg-white p-4">
-    <legend class="text-sm font-medium text-gray-700">Opções adicionais</legend>
-    <div class="flex flex-wrap gap-6 mt-3">
-      <label class="inline-flex items-center text-sm">
-        <input type="checkbox" name="fornecedor_unico"
-          class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-        <span class="ml-2 text-gray-700">Fornecedor Único</span>
-      </label>
-      <label class="inline-flex items-center text-sm">
-        <input type="checkbox" name="imobilizado"
-          class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-        <span class="ml-2 text-gray-700">Imobilizado</span>
-      </label>
-      <label class="inline-flex items-center text-sm">
-        <input type="checkbox" name="compra_emergencial"
-          class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-        <span class="ml-2 text-gray-700">Compra Emergencial</span>
-      </label>
-    </div>
-  </fieldset>
+
 
   <div class="flex justify-end gap-3 pt-4">
     <a href="/dashboard"

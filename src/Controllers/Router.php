@@ -12,7 +12,7 @@ class Router {
     }
 
     public function showLogin(): void {
-        $this->renderLayout('Login.php');
+       require __DIR__ . '/../Views/Login.php';
     }
 
     public function showDashboard(): void {
@@ -20,7 +20,7 @@ class Router {
     }
 
     public function showRegister(): void {
-        $this->renderLayout('Register.php');
+        require __DIR__ . '/../Views/Register.php';
     }
 
     public function showNovaSolicitacao(): void {
