@@ -13,6 +13,8 @@ switch ($path) {
 
     case '/':
         if (!empty($_SESSION['user'])) {
+            $router->showDashboard(); 
+            // AJUSTAR O DASHBOARD, não está funcionando corretamente o Layout.
         } else {
             header('Location: /login');
             exit;

@@ -26,7 +26,7 @@ require_once __DIR__ . '/../Controllers/DatabaseController.php';
             $this->name = $queryResult['name'];
             $this->email = $queryResult['email'];
             $this->password = $queryResult['password'];
-            $this->role = $queryResult['role'];
+            $this->role = $queryResult['role_id'];
           
         }
 

@@ -4,7 +4,7 @@ $erro = $_SESSION['register_erro'] ?? null;
 unset($_SESSION['register_erro']);
 
 $success = $_SESSION['register_success'] ?? null;
-unset($_SESSION['register_success'])
+unset($_SESSION['register_success']);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR" class="h-full">
@@ -53,16 +53,17 @@ unset($_SESSION['register_success'])
           class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
           placeholder="••••••••">
       </div>
-      <div class="space-y-5">
-      <button type="submit"
-        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 px-4 rounded-lg transition font-medium">
-        Cadastrar
-      </button>
-      <button>
-        <a href="/login" class="w-full text-center block bg-gray-200 hover:bg-gray-300 text-gray-800 py-2.5 px-4 rounded-lg transition font-medium">
+      <div class="space-y-3">
+        <button type="submit"
+          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 px-4 rounded-lg transition font-medium">
+          Cadastrar
+        </button>
+
+        <a href="/login"
+          class="w-full text-center block bg-gray-200 hover:bg-gray-300 text-gray-800 py-2.5 px-4 rounded-lg transition font-medium">
           Já tenho uma conta
-        </a> 
-        </div>
+        </a>
+      </div>
     </form>
   </div>
 
