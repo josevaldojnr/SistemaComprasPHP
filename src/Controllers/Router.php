@@ -14,15 +14,12 @@ class Router {
     public function showLogin(): void {
        require __DIR__ . '/../Views/Login.php';
     }
-
     public function showDashboard(): void {
         $this->renderLayout('Dashboard.php');
     }
-
     public function showRegister(): void {
         require __DIR__ . '/../Views/Register.php';
     }
-
     public function showNovaSolicitacao(): void {
         $this->renderLayout('NovaSolicitacao.php');
     }
