@@ -101,7 +101,7 @@ CREATE TABLE requisicao (
     manager_id BIGINT NULL,
     total_cost DECIMAL(7,2),
     setor_id BIGINT NOT NULL,
-    status INT NULL,
+    status_id INT NULL,
     deleted_at TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -111,6 +111,13 @@ CREATE TABLE requisicao (
     CONSTRAINT fk_requisicao_buyer FOREIGN KEY (buyer_id) REFERENCES users(id),
     CONSTRAINT fk_requisicao_manager FOREIGN KEY (manager_id) REFERENCES users(id)
 );
+
+INSERT INTO requisicao (requestor_id, total_cost, setor_id, status_id)
+VALUES
+  (1, 1000.00, 1, 1),
+  (1, 500.00, 2, 1),
+  (1, 2000.00, 3, 1);
+
 
 CREATE TABLE requisicao_produtos (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -123,6 +130,16 @@ CREATE TABLE requisicao_produtos (
     FOREIGN KEY (requisicao_id) REFERENCES requisicao(id),
     FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
+
+INSERT INTO requisicao_produtos (requisicao_id, produto_id, quantidade, subtotal)
+VALUES
+  (1, 1, 10, 500.00),
+  (1, 2, 5, 150.00),
+  (2, 3, 20, 400.00),
+  (2, 4, 1, 500.00),
+  (3, 5, 2, 1000.00),
+  (3, 6, 50, 25.00);
+
 
 -- A SER IMPLEMENTADO RELAÇAO DE CONDIÇAO DE PAGAMENTOS E FORNECEDORES--
 CREATE TABLE condicao_pagamentos (
@@ -141,6 +158,8 @@ CREATE TABLE fornecedores (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+
 
 
 
