@@ -129,6 +129,40 @@ require_once __DIR__ . '/User.php';
         return $this->status_id === 7;
     }
 
+    public function createRequisicao($data, $produtos)
+{
+    $db = new DatabaseController();
+    $connection = $db->getConnection();
+    $sql = "INSERT INTO requisicoes (setor_id, requestor_id, total_cost, setor_id));
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $statement = $connection->prepare($sql);
+    $statement->bind_param(
+        'iiifi',
+        $data['setor_id'],
+        $data['requestor_id'],
+        $data['total_cost'],
+        $data['setor_id']
+    );
+    $statement->execute();
+    $lastInsertId = $connection->insert_id;
+    foreach ($produtos as $produto) {
+        $subtotal = $produto['quantidade'] * $produto['preco_unitario'];
+        $this->addProdutoToRequisicao($lastInsertId, $produto['produto_id'], $produto['quantidade']);
+    }
+    $connection->close();
+}
+
+public function addProdutoToRequisicao($requisicaoId, $produtoId, $quantidade, $subtotal)
+{
+    $db = new DatabaseController();
+    $connection = $db->getConnection();
+    $sql = "INSERT INTO requisicao_produtos (requisicao_id, produto_id, quantidade, subtotal)
+            VALUES (?, ?, ?, ?)";
+    $statement = $connection->prepare($sql);
+    $statement->bind_param('iiif', $requisicaoId, $produtoId, $quantidade, $subtotal);
+    $statement->execute();
+    $connection->close();
+}
 }
 
 ?>

@@ -2,38 +2,48 @@
 require_once __DIR__ . '/DatabaseController.php';
 class Router {
 
+    private function renderLayout(string $view): void {
+        $viewPath = __DIR__ . '/../Views/' . $view;
+        if (file_exists($viewPath)) {
+            require __DIR__ . '/../Views/Layout.php';
+        } else {
+            echo "View not found: " . htmlspecialchars($view);
+        }
+    }
+
     public function showLogin(): void {
-       require __DIR__ . '/../Views/Login.php';
-   }
+        $this->renderLayout('Login.php');
+    }
 
-   public function showDashboard(): void {
-       require __DIR__ . '/../Views/Dashboard.php';
-   }
+    public function showDashboard(): void {
+        $this->renderLayout('Dashboard.php');
+    }
 
-   public function showRegister(): void {
-       require __DIR__ . '/../Views/Register.php';
-   }
+    public function showRegister(): void {
+        $this->renderLayout('Register.php');
+    }
 
-   public function showNovaSolicitacao(): void {
-        require __DIR__ . '/../Views/NovaSolicitacao.php';
+    public function showNovaSolicitacao(): void {
+        $this->renderLayout('NovaSolicitacao.php');
     }
     public function showUsers(): void {
-        require __DIR__ . '/../Views/Users.php';
+        $this->renderLayout('Users.php');
     }
     public function showSetores(): void {
-    require __DIR__ . '/../Views/Setores.php';
+        $this->renderLayout('Setores.php');
     }
     public function showItens(): void {
-    require __DIR__ . '/../Views/Itens.php';
+        $this->renderLayout('Itens.php');
     }
     public function showCategorias(): void {
-    require __DIR__ . '/../Views/Categorias.php';
+        $this->renderLayout('Categorias.php');
     }
     public function showFornecedores(): void {
-    require __DIR__ . '/../Views/Fornecedores.php';
+        $this->renderLayout('Fornecedores.php');
     }
     public function showCondicao(): void {
-    require __DIR__ . '/../Views/CondicaoPagamento.php';
+        $this->renderLayout('CondicaoPagamento.php');
     }
-    
+
+   
 }
