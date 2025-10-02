@@ -38,13 +38,13 @@ if (session_status() !== PHP_SESSION_ACTIVE) session_start();
         </button>
         <div x-show="open" x-transition class="ml-4 mt-1 space-y-1">
           <a href="/nova-solicitacao"
-             @click.prevent="fetch('/nova-solicitacao').then(r => r.text()).then(h => html = h); page='/nova-solicitacao'"
+             @click.prevent="window.history.pushState({}, '', '/nova-solicitacao'); fetch('/nova-solicitacao').then(r => r.text()).then(h => html = h); page='/nova-solicitacao'"
              class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Nova Solicitação</a>
           <a href="/minhas-solicitacoes"
-             @click.prevent="fetch('/minhas-solicitacoes').then(r => r.text()).then(h => html = h); page='/minhas-solicitacoes'"
+             @click.prevent="window.history.pushState({}, '', '/minhas-solicitacoes'); fetch('/minhas-solicitacoes').then(r => r.text()).then(h => html = h); page='/minhas-solicitacoes'"
              class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Minhas Solicitações</a>
           <a href="/acompanhamento"
-             @click.prevent="fetch('/acompanhamento').then(r => r.text()).then(h => html = h); page='/acompanhamento'"
+             @click.prevent="window.history.pushState({}, '', '/acompanhamento'); fetch('/acompanhamento').then(r => r.text()).then(h => html = h); page='/acompanhamento'"
              class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Acompanhamento</a>
         </div>
       </div>
@@ -59,9 +59,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) session_start();
           </svg>
         </button>
         <div x-show="open" x-transition class="ml-4 mt-1 space-y-1">
-          <a href="/solicitacoes-compra"
-             @click.prevent="fetch('/solicitacoes-compra').then(r => r.text()).then(h => html = h); page='/solicitacoes-compra'"
-             class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Solicitações de Compra</a>
+          <a href="/solicitacoes-compra" class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Solicitações de Compra</a>
           <a href="/pedidos-compra"
              @click.prevent="fetch('/pedidos-compra').then(r => r.text()).then(h => html = h); page='/pedidos-compra'"
              class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Pedidos de Compra</a>

@@ -14,7 +14,6 @@ switch ($path) {
     case '/':
         if (!empty($_SESSION['user'])) {
             require __DIR__ . '/../src/Views/Layout.php';
-            $router->showDashboard();
         } else {
             header('Location: /login');
             exit;
