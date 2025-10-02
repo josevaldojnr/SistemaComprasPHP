@@ -1,7 +1,7 @@
 <?php
 class DatabaseController {
     private $dbConnection;
-    private $host = '0.0.0.0:3306';
+    private $host = '127.0.0.0:3306';
     private $username='root';
     private $password='';
     private $dbname='sistema_compras';
