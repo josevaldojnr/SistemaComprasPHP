@@ -99,6 +99,7 @@ CREATE TABLE requisicao (
     pricing_id BIGINT NULL,
     buyer_id BIGINT NULL,
     manager_id BIGINT NULL,
+    description TEXT NULL,
     total_cost DECIMAL(7,2),
     setor_id BIGINT NOT NULL,
     status_id INT NULL,
@@ -140,15 +141,6 @@ VALUES
   (3, 5, 2, 1000.00),
   (3, 6, 50, 25.00);
 
-
--- A SER IMPLEMENTADO RELAÇAO DE CONDIÇAO DE PAGAMENTOS E FORNECEDORES--
-CREATE TABLE condicao_pagamentos (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL,
-    prazo INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
 
 CREATE TABLE fornecedores (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,

@@ -84,8 +84,6 @@ $view = $view ?? null;
              class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Fornecedores</a>
           <a href="/categorias"
              class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Categorias</a>
-          <a href="/condicao-pagamento"
-             class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Condição de Pagamento</a>
         </div>
       </div>
 

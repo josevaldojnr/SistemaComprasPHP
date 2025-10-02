@@ -13,7 +13,7 @@ $itens = $db->executeQuery("SELECT p.id, p.nome, p.preco, c.nome AS categoria FR
 ?>
 
 <div class="bg-white shadow-md rounded-lg p-6">
-  <form action="/produtos/salvar" method="POST" class="mb-6">
+  <form action="" method="POST" class="mb-6">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
       <div>
         <label for="nome" class="block text-sm font-medium text-gray-700">Nome</label>

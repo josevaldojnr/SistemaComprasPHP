@@ -26,57 +26,13 @@
         <option value="2">Fornecedor B</option>
       </select>
     </div>
-
-    <div>
-      <label class="block text-sm font-medium text-gray-600 mb-1">Condição de Pagamento</label>
-      <select name="condicao_pagamento_id"
-        class="block w-full rounded-md border border-gray-300 bg-white text-sm py-2 px-3
-               focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
-        <option value="">Selecione...</option>
-        <option value="1">À Vista</option>
-        <option value="2">30 dias</option>
-        <option value="3">60 dias</option>
-      </select>
-    </div>
-
-    <div>
-      <label class="block text-sm font-medium text-gray-600 mb-1">Tipo de Frete</label>
-      <input type="text" name="frete" placeholder="Ex: CIF, FOB..."
-        class="block w-full rounded-md border border-gray-300 text-sm py-2 px-3
-               focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-    <div>
-      <label class="block text-sm font-medium text-gray-600 mb-1">Nível de Impacto</label>
-      <input type="text" name="nivel_impacto" placeholder="Baixo, Médio, Alto..."
-        class="block w-full rounded-md border border-gray-300 text-sm py-2 px-3
-               focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
-    </div>
-
-    <div>
-      <label class="block text-sm font-medium text-gray-600 mb-1">Prazo Estimado</label>
-      <input type="date" name="prazo_estimado"
-        class="block w-full rounded-md border border-gray-300 text-sm py-2 px-3
-               focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
-    </div>
-  </div>
-
+  
   <div>
     <label class="block text-sm font-medium text-gray-600 mb-1">Descrição</label>
     <textarea name="descricao" rows="3" placeholder="Detalhe a solicitação..."
       class="block w-full rounded-md border border-gray-300 text-sm py-2 px-3
              focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"></textarea>
   </div>
-
-  <div>
-    <label class="block text-sm font-medium text-gray-600 mb-1">Observação</label>
-    <textarea name="observacao" rows="2" placeholder="Alguma observação extra?"
-      class="block w-full rounded-md border border-gray-300 text-sm py-2 px-3
-             focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"></textarea>
-  </div>
-
 
 
   <div class="flex justify-end gap-3 pt-4">

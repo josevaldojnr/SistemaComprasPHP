@@ -2,11 +2,11 @@
 if (session_status() !== PHP_SESSION_ACTIVE) session_start();
 if (empty($_SESSION['user'])) exit;
 
-$usuarios = [
-    ["id" => 1, "name" => "Admin", "email" => "admin@sisbuy.com", "role" => "admin", "is_active" => 1],
-    ["id" => 2, "name" => "João Silva", "email" => "joao@empresa.com", "role" => "requisitante", "is_active" => 1],
-    ["id" => 3, "name" => "Maria Souza", "email" => "maria@empresa.com", "role" => "compras", "is_active" => 0],
-];
+
+require_once __DIR__ . '/../Controllers/DatabaseController.php';
+
+$db = new DatabaseController();
+$users = $db->executeQuery("SELECT * FROM users ORDER BY id ASC");
 ?>
 
 <h1 class="text-2xl font-bold mb-6 text-gray-800">Usuários</h1>
@@ -31,12 +31,14 @@ $usuarios = [
       </tr>
     </thead>
     <tbody class="bg-white divide-y divide-gray-200">
-      <?php foreach ($usuarios as $user): ?>
+      <?php foreach ($users as $user): ?>
         <tr>
           <td class="px-6 py-4 text-sm text-gray-700"><?= $user['id'] ?></td>
           <td class="px-6 py-4 text-sm text-gray-700"><?= htmlspecialchars($user['name']) ?></td>
           <td class="px-6 py-4 text-sm text-gray-700"><?= htmlspecialchars($user['email']) ?></td>
-          <td class="px-6 py-4 text-sm text-gray-700"><?= htmlspecialchars($user['role']) ?></td>
+          <td class="px-6 py-4 text-sm text-gray-700"><?= 'Administrador' ?></td>
+          <td class="px-6 py-4 text-sm text-gray-700"><?= htmlspecialchars($user['is_active']) ?></td>
+          
           <td class="px-6 py-4 text-sm">
             <?php if ($user['is_active']): ?>
               <span class="px-2 inline-flex text-xs font-semibold rounded-full bg-green-100 text-green-800">Ativo</span>
