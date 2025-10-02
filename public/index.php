@@ -13,8 +13,8 @@ switch ($path) {
 
     case '/':
         if (!empty($_SESSION['user'])) {
-            $router->showDashboard(); 
-            // AJUSTAR O DASHBOARD, não está funcionando corretamente o Layout.
+            require __DIR__ . '/../src/Views/Layout.php';
+            $router->showDashboard();
         } else {
             header('Location: /login');
             exit;
@@ -34,7 +34,7 @@ switch ($path) {
         if (!empty($_SESSION['user'])) {
             $router->showUsers();
         } else {
-            header('Location: /login');
+            $router->showLogin();
             exit;
         }
         break;
@@ -43,7 +43,7 @@ switch ($path) {
         if (!empty($_SESSION['user'])) {
             $router->showNovaSolicitacao();
         } else {
-            header('Location: /login');
+            $router->showLogin();
             exit;
         }
         break;
