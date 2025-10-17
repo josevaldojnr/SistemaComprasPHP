@@ -82,8 +82,18 @@ class UserController {
             exit;
         }
 
-        $includeStatement = $db->getConnection()->prepare('INSERT INTO users (name, email, password, role_id, is_active) VALUES (?, ?, ?, 1,1)');
-        $includeStatement->bind_param('sss', $user, $email, $hashedPass ); 
+       $query = 'SELECT COUNT(*) FROM users';
+        $stmt = $db->getConnection()->prepare($query);
+        $stmt->execute();
+        $stmt->store_result();  
+        $stmt->bind_result($userCount);
+        $stmt->fetch();
+
+        $roleId = ($userCount == 0) ? 5 : 1; 
+
+        $includeStatement = $db->getConnection()->prepare('INSERT INTO users (name, email, password, role_id, is_active) VALUES (?, ?, ?, ?, 1)');
+
+        $includeStatement->bind_param('sssi',  $user, $email, $hashedPass, $roleId ); 
       
         
         if($includeStatement->execute()){
@@ -107,6 +117,40 @@ class UserController {
         header('Location: /login');
         exit;
     }
+
+    public function deleteUser(): void {
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
+
+    if (empty($_SESSION['user'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+        header('Location: /users');
+        exit;
+    }
+
+    $id = (int)$_GET['id'];
+
+    $db = new DatabaseController();
+    $conn = $db->getConnection();
+
+    $stmt = $conn->prepare('UPDATE users SET is_active = 0 WHERE id = ? AND is_active = 1');
+
+    $stmt->bind_param('i', $id);
+    $stmt->execute();
+    $stmt->close();
+    $db->closeConnection();
+
+    $_SESSION['delete_msg'] = "Usuário deletado com sucesso";
+
+    header('Location: /users');
+    exit;
+}
+
     }
         
 

@@ -123,7 +123,16 @@ switch ($path) {
             exit;
         }
         break;
-        
+    case '/users/delete':
+    if (!empty($_SESSION['user'])) {
+        $userController->deleteUser();
+        header('Location:/logout');
+    } else {
+        header('Location: /login');
+        exit;
+    }
+    break;
+
     default:
         http_response_code(404);
         echo "Página não encontrada!";
