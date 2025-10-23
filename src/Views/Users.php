@@ -11,13 +11,6 @@ $users = $db->executeQuery("SELECT * FROM users ORDER BY id ASC");
 
 <h1 class="text-2xl font-bold mb-6 text-gray-800">Usuários</h1>
 
-<div class="mb-4">
-  <a href="/users/create"
-     class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-    + Novo Usuário
-  </a>
-</div>
-
 <div class="overflow-x-auto bg-white shadow-md rounded-lg">
   <table class="min-w-full divide-y divide-gray-200">
     <thead class="bg-gray-50">
@@ -36,9 +29,16 @@ $users = $db->executeQuery("SELECT * FROM users ORDER BY id ASC");
           <td class="px-6 py-4 text-sm text-gray-700"><?= $user['id'] ?></td>
           <td class="px-6 py-4 text-sm text-gray-700"><?= htmlspecialchars($user['name']) ?></td>
           <td class="px-6 py-4 text-sm text-gray-700"><?= htmlspecialchars($user['email']) ?></td>
-          <td class="px-6 py-4 text-sm text-gray-700"><?= 'Administrador' ?></td>
-          <td class="px-6 py-4 text-sm text-gray-700"><?= htmlspecialchars($user['is_active']) ?></td>
-          
+          <?php 
+          $roles = [
+              1 => 'Requisitante',
+              2 => 'Pricing',
+              3 => 'Compras',
+              4 => 'Gerente',
+              5 => 'Administrador',
+          ];
+          ?>
+          <td class="px-6 py-4 text-sm text-gray-700"><?= $roles[$user['role_id']] ?? 'Desconhecido' ?></td>
           <td class="px-6 py-4 text-sm">
             <?php if ($user['is_active']): ?>
               <span class="px-2 inline-flex text-xs font-semibold rounded-full bg-green-100 text-green-800">Ativo</span>
