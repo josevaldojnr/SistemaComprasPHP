@@ -1,3 +1,8 @@
+<?php
+require_once __DIR__ . '/../Controllers/ProdutoController.php';
+require_once __DIR__ . '/../Models/Produto.php';
+$products = ProdutoController::getAllProducts();
+?>
 <h1 class="text-2xl font-semibold mb-6 text-gray-900">Nova Solicitação</h1>
 
 <form action="salvar_solicitacao.php" method="POST" class="space-y-6 bg-gray-50 border border-gray-200 shadow-sm rounded-lg p-6">
@@ -38,18 +43,24 @@
  <div class="border-t border-gray-200 pt-6">
     <label class="block text-sm font-medium text-gray-600 mb-1">Carrinho</label>
     <table class ="min-w-full divide-y divide-gray-200 border">
+      
       <th>Produto</th>
-      <th>Quantidade</th>
-      <th>Preço</th>
-      <th>Subtotal</th>
+      <th>Preço Unitário</th>
 
       <tbody id="carrinho-itens">
+    <?php if (!empty($products)): ?>
+      <?php foreach ($products as $row): ?>
         <tr>
-          <td>Produto Exemplo</td>
-          <td>2</td>
-          <td>R$ 50,00</td>
-          <td>R$ 100,00</td>
+          <td><?= htmlspecialchars($row->name) ?></td>
+          <td>R$<?= number_format($row->price, 2, ',', '.') ?></td>
         </tr>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <tr>
+        <td colspan="3" style="text-align:center;">Nenhuma produto econtrado</td>
+      </tr>
+    <?php endif; ?>
+      </tbody>
     </table>
   </div>
 

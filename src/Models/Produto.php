@@ -10,13 +10,11 @@ class Produto {
             $this->id = 0;
             $this->name = '';
             $this->price = 0.0;
-            $this->stock = 0;
             return;
         }
         $this->id = $queryResult['id'];
-        $this->name = $queryResult['name'];
-        $this->price = $queryResult['price'];
-        $this->stock = $queryResult['stock'];
+        $this->name = $queryResult['nome'];
+        $this->price = $queryResult['preco'];
       
     }
 

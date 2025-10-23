@@ -5,15 +5,16 @@ class ProdutoController {
 
     public function getProductById(int $id): Produto {
         $connector = new DatabaseController();
-        $query = "SELECT * FROM products WHERE id = $id";
-        $result = $this->connector->executeQuery($query);
+        $query = "SELECT * FROM produtos WHERE id = $id";
+        $result = $connector->executeQuery($query);
         $productData = $result->fetch_assoc();
         return new Produto($productData);
     }
 
-    public function getAllProducts(): array {
-        $query = "SELECT * FROM products";
-        $result = $this->connector->executeQuery($query);
+    public static function getAllProducts(): array {
+        $connector = new DatabaseController();
+        $query = "SELECT * FROM produtos";
+        $result = $connector->executeQuery($query);
         $products = [];
         while ($row = $result->fetch_assoc()) {
             $products[] = new Produto($row);
