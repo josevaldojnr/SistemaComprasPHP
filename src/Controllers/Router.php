@@ -38,9 +38,7 @@ class Router {
     public function showFornecedores(): void {
         $this->renderLayout('Fornecedores.php');
     }
-    public function showCondicao(): void {
-        $this->renderLayout('CondicaoPagamento.php');
-    }
+  
 
    
 }

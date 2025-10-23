@@ -33,7 +33,25 @@
       class="block w-full rounded-md border border-gray-300 text-sm py-2 px-3
              focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"></textarea>
   </div>
+</div>
 
+ <div class="border-t border-gray-200 pt-6">
+    <label class="block text-sm font-medium text-gray-600 mb-1">Carrinho</label>
+    <table class ="min-w-full divide-y divide-gray-200 border">
+      <th>Produto</th>
+      <th>Quantidade</th>
+      <th>Preço</th>
+      <th>Subtotal</th>
+
+      <tbody id="carrinho-itens">
+        <tr>
+          <td>Produto Exemplo</td>
+          <td>2</td>
+          <td>R$ 50,00</td>
+          <td>R$ 100,00</td>
+        </tr>
+    </table>
+  </div>
 
   <div class="flex justify-end gap-3 pt-4">
     <a href="/dashboard"
@@ -45,4 +63,7 @@
       Salvar
     </button>
   </div>
+
+   
+
 </form>

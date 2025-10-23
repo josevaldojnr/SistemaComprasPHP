@@ -107,14 +107,6 @@ switch ($path) {
             exit;
         }
         break;
-    case '/condicao-pagamento':
-        if (!empty($_SESSION['user'])) {
-            $router->showCondicao();
-        } else {
-            header('Location: /login');
-            exit;
-        }
-        break;
     case '/fornecedores':
         if (!empty($_SESSION['user'])) {
             $router->showFornecedores();
