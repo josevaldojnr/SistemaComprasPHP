@@ -149,7 +149,37 @@ class UserController {
 
     header('Location: /users');
     exit;
-}
+    }
+        public function editUser() {
+        if (!isset($_GET['id'])) {
+            header("Location: /users");
+            exit;
+        }
+
+        $id = $_GET['id'];
+        $user = $this->model->getUserById($id);
+
+        if (!$user) {
+            header("Location: /users");
+            exit;
+        }
+
+        include __DIR__ . '/../Views/UserEdit.php';
+    }
+
+    public function updateUser() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'];
+            $name = $_POST['nome'];
+            $email = $_POST['email'];
+
+            $this->model->updateUser($id, $name, $email);
+
+            header("Location: /users");
+            exit;
+        }
+    }
+
 
     }
         

@@ -124,7 +124,14 @@ switch ($path) {
         exit;
     }
     break;
-
+    case '/users/edit':
+        if (!empty($_SESSION['user'])) {
+            $router->showEditUser();
+        } else {
+            header('Location: /login');
+            exit;
+        }
+        break;
     default:
         http_response_code(404);
         echo "Página não encontrada!";
