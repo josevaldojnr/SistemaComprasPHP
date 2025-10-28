@@ -119,66 +119,59 @@ class UserController {
     }
 
     public function deleteUser(): void {
-    if (session_status() !== PHP_SESSION_ACTIVE) {
-        session_start();
-    }
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
 
-    if (empty($_SESSION['user'])) {
-        header('Location: /login');
-        exit;
-    }
+        if (empty($_SESSION['user'])) {
+            header('Location: /login');
+            exit;
+        }
 
-    if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+        if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+            header('Location: /users');
+            exit;
+        }
+
+        $id = (int)$_GET['id'];
+
+        $db = new DatabaseController();
+        $conn = $db->getConnection();
+
+        $stmt = $conn->prepare('UPDATE users SET is_active = 0 WHERE id = ? AND is_active = 1');
+
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $stmt->close();
+        $db->closeConnection();
+
+        $_SESSION['delete_msg'] = "Usuário deletado com sucesso";
+
         header('Location: /users');
         exit;
     }
-
-    $id = (int)$_GET['id'];
-
-    $db = new DatabaseController();
-    $conn = $db->getConnection();
-
-    $stmt = $conn->prepare('UPDATE users SET is_active = 0 WHERE id = ? AND is_active = 1');
-
-    $stmt->bind_param('i', $id);
-    $stmt->execute();
-    $stmt->close();
-    $db->closeConnection();
-
-    $_SESSION['delete_msg'] = "Usuário deletado com sucesso";
-
-    header('Location: /users');
-    exit;
-    }
-        public function editUser() {
-        if (!isset($_GET['id'])) {
-            header("Location: /users");
-            exit;
-        }
-
-        $id = $_GET['id'];
-        $user = $this->model->getUserById($id);
-
-        if (!$user) {
-            header("Location: /users");
-            exit;
-        }
-
-        include __DIR__ . '/../Views/UserEdit.php';
-    }
-
-    public function updateUser() {
+    public function updateUser(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['id'];
+            $id = intval($_POST['id']);
             $name = $_POST['nome'];
             $email = $_POST['email'];
+            $roleId = intval($_POST['funcao']);
+            $status = $_POST['status'] === 'ativo' ? 1 : 0;
 
-            $this->model->updateUser($id, $name, $email);
+            $db = new DatabaseController();
 
-            header("Location: /users");
+            $stmt = $db->getConnection()->prepare(
+                "UPDATE users SET name = ?, email = ?, role_id = ?, is_active = ? WHERE id = ?"
+            );
+            $stmt->bind_param('ssiii', $name, $email, $roleId, $status, $id);
+            $stmt->execute();
+            $stmt->close();
+            $db->closeConnection();
+
+            header('Location: /users');
             exit;
         }
-    }
+}
 
 
     }

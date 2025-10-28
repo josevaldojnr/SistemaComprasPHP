@@ -116,17 +116,25 @@ switch ($path) {
         }
         break;
     case '/users/delete':
-    if (!empty($_SESSION['user'])) {
-        $userController->deleteUser();
-        header('Location:/logout');
-    } else {
-        header('Location: /login');
-        exit;
-    }
-    break;
+        if (!empty($_SESSION['user'])) {
+            $userController->deleteUser();
+            header('Location:/logout');
+        } else {
+            header('Location: /login');
+            exit;
+        }
+        break;
     case '/users/edit':
         if (!empty($_SESSION['user'])) {
             $router->showEditUser();
+        } else {
+            header('Location: /login');
+            exit;
+        }
+        break;
+    case '/users/updateUser':
+        if (!empty($_SESSION['user'])) {
+            $userController->updateUser(); 
         } else {
             header('Location: /login');
             exit;
