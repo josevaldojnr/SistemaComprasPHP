@@ -171,7 +171,7 @@ class UserController {
             header('Location: /users');
             exit;
         }
-}
+    }
 
 
     }
