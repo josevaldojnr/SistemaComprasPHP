@@ -156,24 +156,56 @@ class UserController {
             $name = $_POST['nome'];
             $email = $_POST['email'];
             $roleId = intval($_POST['funcao']);
+            $newSetorId = intval($_POST['setor_id']);
             $status = $_POST['status'] === 'ativo' ? 1 : 0;
 
             $db = new DatabaseController();
+            $conn = $db->getConnection();
+            $conn->begin_transaction();
 
-            $stmt = $db->getConnection()->prepare(
-                "UPDATE users SET name = ?, email = ?, role_id = ?, is_active = ? WHERE id = ?"
-            );
-            $stmt->bind_param('ssiii', $name, $email, $roleId, $status, $id);
-            $stmt->execute();
-            $stmt->close();
-            $db->closeConnection();
+            try {
+                $resultOldSetor = $conn->query("SELECT setor_id FROM users WHERE id = $id LIMIT 1");
+                if (!$resultOldSetor) throw new Exception('Erro ao buscar setor antigo.');
+                $oldSetorId = null;
+                $row = $resultOldSetor->fetch_assoc();
+                if ($row) $oldSetorId = intval($row['setor_id']);
 
-            header('Location: /users');
-            exit;
+                $stmtUser = $conn->prepare(
+                    "UPDATE users SET name = ?, email = ?, role_id = ?, setor_id = ?, is_active = ? WHERE id = ?"
+                );
+                $stmtUser->bind_param('ssiiii', $name, $email, $roleId, $newSetorId, $status, $id);
+                $stmtUser->execute();
+                $stmtUser->close();
+
+                $stmtSetorNovo = $conn->prepare(
+                    "UPDATE setores SET user_responsavel_id = ? WHERE id = ?"
+                );
+                $stmtSetorNovo->bind_param('ii', $id, $newSetorId);
+                $stmtSetorNovo->execute();
+                $stmtSetorNovo->close();
+
+                if ($oldSetorId !== null && $oldSetorId !== $newSetorId) {
+                    $stmtSetorOld = $conn->prepare(
+                        "UPDATE setores SET user_responsavel_id = NULL WHERE id = ?"
+                    );
+                    $stmtSetorOld->bind_param('i', $oldSetorId);
+                    $stmtSetorOld->execute();
+                    $stmtSetorOld->close();
+                }
+
+                $conn->commit();
+                $db->closeConnection();
+
+                header('Location: /users');
+                exit;
+
+            } catch (Exception $e) {
+                $conn->rollback();
+                $db->closeConnection();
+                exit("Erro ao atualizar: " . $e->getMessage());
+            }
         }
     }
-
-
     }
         
 

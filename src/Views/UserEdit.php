@@ -32,6 +32,16 @@ $roles = [];
 while ($row = $resultRoles->fetch_assoc()) {
     $roles[] = $row;
 }
+
+$resultSetores = $db->executeQuery("SELECT id, nome FROM setores ORDER BY nome");
+if (!$resultSetores) {
+    exit('Erro na consulta dos setores.');
+}
+
+$setores = [];
+while ($row = $resultSetores->fetch_assoc()) {
+    $setores[] = $row;
+}
 ?>
 
 <h1 class="text-2xl font-bold mb-6 text-gray-800">Editar Usuário</h1>
@@ -52,6 +62,15 @@ while ($row = $resultRoles->fetch_assoc()) {
               <?= htmlspecialchars(ucfirst($role['name'])) ?>
           </option>
       <?php endforeach; ?>
+  </select>
+
+  <label class="block mb-1 font-semibold">Setor</label>
+  <select name="setor_id" required class="w-full border rounded px-3 py-2 mb-4">
+    <?php foreach ($setores as $setor): ?>
+      <option value="<?= htmlspecialchars($setor['id']) ?>" <?= ($user['setor_id'] == $setor['id']) ? 'selected' : '' ?>>
+        <?= htmlspecialchars($setor['nome']) ?>
+      </option>
+    <?php endforeach; ?>
   </select>
 
   <label class="block mb-1 font-semibold">Status</label>

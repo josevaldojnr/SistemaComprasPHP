@@ -14,14 +14,20 @@ INSERT INTO roles (name) VALUES
   ('admin');
 
 CREATE TABLE users (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(120) NOT NULL,
-    email VARCHAR(160) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    role_id INT NOT NULL,
-    is_active BOOLEAN NOT NULL DEFAULT TRUE,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_users_role FOREIGN KEY (role_id) REFERENCES roles(id)
+  id bigint NOT NULL AUTO_INCREMENT,
+  name varchar(120) NOT NULL,
+  email varchar(160) NOT NULL,
+  password varchar(255) NOT NULL,
+  role_id int NOT NULL,
+  setor_id bigint DEFAULT NULL,
+  is_active tinyint(1) NOT NULL DEFAULT '1',
+  created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY email (email),
+  KEY fk_users_role (role_id),
+  KEY fk_users_setor (setor_id),
+  CONSTRAINT fk_users_role FOREIGN KEY (role_id) REFERENCES roles (id),
+  CONSTRAINT fk_users_setor FOREIGN KEY (setor_id) REFERENCES setores (id)
 );
 
 CREATE TABLE categorias (
@@ -77,14 +83,19 @@ INSERT INTO produtos (nome, preco, categoria_id) VALUES
   ('Notebook', 5000.00, 2),
   ('Roteador', 300.00, 2);
 
-CREATE TABLE setores (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(120) NOT NULL,
-    deleted_at TIMESTAMP NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+CREATE TABLE `setores` (
+  id bigint NOT NULL AUTO_INCREMENT,
+  nome varchar(120) NOT NULL,
+  deleted_at timestamp NULL DEFAULT NULL,
+  created_at timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  teto_gestor decimal(15,2) NOT NULL DEFAULT '0.00',
+  teto_diretoria decimal(15,2) NOT NULL DEFAULT '0.00',
+  user_responsavel_id bigint DEFAULT NULL,
+  PRIMARY KEY (id),
+  KEY fk_setores_user_responsavel (user_responsavel_id),
+  CONSTRAINT fk_setores_user_responsavel FOREIGN KEY (user_responsavel_id) REFERENCES users (id)
 );
-
 
 INSERT INTO setores (nome) VALUES
   ('Produção'),

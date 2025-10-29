@@ -11,7 +11,11 @@ $db = new DatabaseController();
 $conn = $db->getConnection();
 
 try {
-    $result = $db->executeQuery("SELECT * FROM setores");
+    $result = $db->executeQuery("
+        SELECT s.*, u.email AS email_responsavel
+        FROM setores s
+        LEFT JOIN users u ON s.user_responsavel_id = u.id
+    ");
     $setores = $result->fetch_all(MYSQLI_ASSOC);
 } catch (Exception $e) {
     $setores = [];
@@ -50,7 +54,7 @@ try {
             <tr>
               <td class="px-6 py-4"><?= $setor['id'] ?></td>
               <td class="px-6 py-4"><?= htmlspecialchars($setor['nome']) ?></td>
-              <td class="px-6 py-4"><?= htmlspecialchars($setor['email_responsavel']) ?></td>
+              <td class="px-6 py-4"><?= htmlspecialchars($setor['email_responsavel'] ?? 'Sem responsável') ?></td>
               <td class="px-6 py-4">R$ <?= number_format($setor['teto_gestor'], 2, ',', '.') ?></td>
               <td class="px-6 py-4">R$ <?= number_format($setor['teto_diretoria'], 2, ',', '.') ?></td>
               <td class="px-6 py-4 text-right space-x-2">
