@@ -1,26 +1,36 @@
 <?php
 require_once __DIR__ . '/../Models/Produto.php';
 require_once __DIR__ . '/DatabaseController.php';
+
 class ProdutoController {
+    private $dbController;
+
+    public function __construct() {
+        $this->dbController = new DatabaseController();
+    }
 
     public function getProductById(int $id): Produto {
-        $connector = new DatabaseController();
-        $query = "SELECT * FROM produtos WHERE id = $id";
-        $result = $connector->executeQuery($query);
-        $productData = $result->fetch_assoc();
+        $conn = $this->dbController->getConnection();
+        $query = "SELECT * FROM produtos WHERE id = :id";
+        $stmt = $conn->prepare($query);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $productData = $stmt->fetch(PDO::FETCH_ASSOC);
         return new Produto($productData);
     }
 
-    public static function getAllProducts(): array {
-        $connector = new DatabaseController();
+    public function getAllProducts(): array {
+        $conn = $this->dbController->getConnection();
         $query = "SELECT * FROM produtos";
-        $result = $connector->executeQuery($query);
+        $stmt = $conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $products = [];
-        while ($row = $result->fetch_assoc()) {
+     
+        foreach($result as $row) {
             $products[] = new Produto($row);
         }
-        return $products;
+         return $products;
     }
-
 }
 ?>

@@ -3,6 +3,11 @@ require_once __DIR__ . '/../Models/User.php';
 require_once __DIR__ . '/DatabaseController.php';
 
 class UserController {
+    private $dbController;
+
+    public function __construct() {
+        $this->dbController = new DatabaseController();
+    }
 
     public function login(): User {
         if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -13,15 +18,13 @@ class UserController {
         $pass = $_POST['password'] ?? '';
 
         $db = new DatabaseController();
-        $statement = $db->getConnection()->prepare('SELECT * FROM users WHERE email = ? AND is_active = 1');
-        $statement->bind_param('s', $email);
+        $statement = $db->getConnection()->prepare('SELECT * FROM users WHERE email = :email AND is_active = 1');
+        $statement->bindValue(':email', $email); // Correctly bind the email parameter
         $statement->execute();
-        $queryResult = $statement->get_result();
-        $userData = $queryResult->fetch_assoc();
+        $userData = $statement->fetch(PDO::FETCH_ASSOC); // Fetch single user data
         $db->closeConnection();
-                
-
-          if ($userData && password_verify($pass, $userData['password'])) {
+            
+        if ($userData && password_verify($pass, $userData['password'])) {
             $_SESSION['user'] = $userData['name'];
             $_SESSION['is_auth'] = true;
             session_regenerate_id(true);
@@ -30,10 +33,9 @@ class UserController {
             return new User($userData);
         }
 
-            $_SESSION['login_erro'] = "Usuário ou senha inválidos";
-            header('Location: /login');
-            return new User();
-
+        $_SESSION['login_erro'] = "Usuário ou senha inválidos";
+        header('Location: /login');
+        return new User();
     }
 
     public function register():void{
@@ -73,9 +75,9 @@ class UserController {
 
 
         $connector = $db->getConnection()->prepare('SELECT id FROM users WHERE email = ?');
-        $connector->bind_param('s', $email);
+        $connector->bindValue(1, $email);
         $connector->execute();
-        $queryUser = $connector->get_result();
+        $queryUser = $connector->fetchAll(PDO::FETCH_ASSOC);
         if($queryUser->num_rows > 0){
             $_SESSION['register_erro'] = "Email já estão em uso";
             header('Location: /register');
@@ -139,8 +141,7 @@ class UserController {
         $conn = $db->getConnection();
 
         $stmt = $conn->prepare('UPDATE users SET is_active = 0 WHERE id = ? AND is_active = 1');
-
-        $stmt->bind_param('i', $id);
+        $stmt->bindValue(1, $id); // Use positional parameter
         $stmt->execute();
         $stmt->close();
         $db->closeConnection();
@@ -153,44 +154,47 @@ class UserController {
     public function updateUser(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = intval($_POST['id']);
-            $name = $_POST['nome'];
-            $email = $_POST['email'];
+            $name = trim($_POST['nome']);
+            $email = trim($_POST['email']);
             $roleId = intval($_POST['funcao']);
             $newSetorId = intval($_POST['setor_id']);
             $status = $_POST['status'] === 'ativo' ? 1 : 0;
 
             $db = new DatabaseController();
             $conn = $db->getConnection();
-            $conn->begin_transaction();
+            $conn->beginTransaction();
 
             try {
-                $resultOldSetor = $conn->query("SELECT setor_id FROM users WHERE id = $id LIMIT 1");
-                if (!$resultOldSetor) throw new Exception('Erro ao buscar setor antigo.');
-                $oldSetorId = null;
-                $row = $resultOldSetor->fetch_assoc();
-                if ($row) $oldSetorId = intval($row['setor_id']);
+                // Fetch the old setor ID
+                $stmtOldSetor = $conn->prepare("SELECT setor_id FROM users WHERE id = :id LIMIT 1");
+                $stmtOldSetor->bindParam(':id', $id, PDO::PARAM_INT);
+                $stmtOldSetor->execute();
+                $row = $stmtOldSetor->fetch(PDO::FETCH_ASSOC);
+                $oldSetorId = $row ? intval($row['setor_id']) : null;
 
+                // Update user information
                 $stmtUser = $conn->prepare(
-                    "UPDATE users SET name = ?, email = ?, role_id = ?, setor_id = ?, is_active = ? WHERE id = ?"
+                    "UPDATE users SET name = :name, email = :email, role_id = :role_id, setor_id = :setor_id, is_active = :is_active WHERE id = :id"
                 );
-                $stmtUser->bind_param('ssiiii', $name, $email, $roleId, $newSetorId, $status, $id);
+                $stmtUser->bindParam(':name', $name);
+                $stmtUser->bindParam(':email', $email);
+                $stmtUser->bindParam(':role_id', $roleId, PDO::PARAM_INT);
+                $stmtUser->bindParam(':setor_id', $newSetorId, PDO::PARAM_INT);
+                $stmtUser->bindParam(':is_active', $status, PDO::PARAM_INT);
+                $stmtUser->bindParam(':id', $id, PDO::PARAM_INT);
                 $stmtUser->execute();
-                $stmtUser->close();
 
-                $stmtSetorNovo = $conn->prepare(
-                    "UPDATE setores SET user_responsavel_id = ? WHERE id = ?"
-                );
-                $stmtSetorNovo->bind_param('ii', $id, $newSetorId);
+                // Update the new setor
+                $stmtSetorNovo = $conn->prepare("UPDATE setores SET user_responsavel_id = :user_id WHERE id = :setor_id");
+                $stmtSetorNovo->bindParam(':user_id', $id, PDO::PARAM_INT);
+                $stmtSetorNovo->bindParam(':setor_id', $newSetorId, PDO::PARAM_INT);
                 $stmtSetorNovo->execute();
-                $stmtSetorNovo->close();
 
+                // Clear the old setor if it has changed
                 if ($oldSetorId !== null && $oldSetorId !== $newSetorId) {
-                    $stmtSetorOld = $conn->prepare(
-                        "UPDATE setores SET user_responsavel_id = NULL WHERE id = ?"
-                    );
-                    $stmtSetorOld->bind_param('i', $oldSetorId);
+                    $stmtSetorOld = $conn->prepare("UPDATE setores SET user_responsavel_id = NULL WHERE id = :setor_id");
+                    $stmtSetorOld->bindParam(':setor_id', $oldSetorId, PDO::PARAM_INT);
                     $stmtSetorOld->execute();
-                    $stmtSetorOld->close();
                 }
 
                 $conn->commit();
@@ -200,13 +204,18 @@ class UserController {
                 exit;
 
             } catch (Exception $e) {
-                $conn->rollback();
+                $conn->rollBack();
                 $db->closeConnection();
                 exit("Erro ao atualizar: " . $e->getMessage());
             }
         }
     }
+    public function getAllUsers(): array {
+        $conn = $this->dbController->getConnection();
+        $query = "SELECT * FROM users"; // Adjust the query as needed
+        $stmt = $conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch all users as an associative array
     }
-        
-
+}
 ?>

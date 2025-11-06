@@ -4,15 +4,13 @@ if (empty($_SESSION['user'])) exit;
 
 
 require_once __DIR__ . '/../Controllers/DatabaseController.php';
+require_once __DIR__ . '/../Controllers/UserController.php';
 
 $db = new DatabaseController();
-$users = $db->executeQuery("SELECT * FROM users ORDER BY id ASC");
+$userController = new UserController();
 
-$setores = $db->executeQuery("SELECT id, nome FROM setores");
-$setoresMap = [];
-foreach ($setores as $setor) {
-    $setoresMap[$setor['id']] = $setor['nome'];
-}
+$users = $userController->getAllUsers();
+
 ?>
 
 <h1 class="text-2xl font-bold mb-6 text-gray-800">Usuários</h1>
@@ -24,7 +22,6 @@ foreach ($setores as $setor) {
         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th>
         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Setor</th>
         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Função</th>
         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
         <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Ações</th>
@@ -36,7 +33,6 @@ foreach ($setores as $setor) {
           <td class="px-6 py-4 text-sm text-gray-700"><?= $user['id'] ?></td>
           <td class="px-6 py-4 text-sm text-gray-700"><?= htmlspecialchars($user['name']) ?></td>
           <td class="px-6 py-4 text-sm text-gray-700"><?= htmlspecialchars($user['email']) ?></td>
-          <td class="px-6 py-4 text-sm text-gray-700"><?= htmlspecialchars($setoresMap[$user['setor_id']] ?? 'Desconhecido') ?></td>
           <?php 
           $roles = [
               1 => 'Requisitante',

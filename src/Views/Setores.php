@@ -11,12 +11,13 @@ $db = new DatabaseController();
 $conn = $db->getConnection();
 
 try {
-    $result = $db->executeQuery("
+    $stmt = $conn->prepare("
         SELECT s.*, u.email AS email_responsavel
         FROM setores s
         LEFT JOIN users u ON s.user_responsavel_id = u.id
     ");
-    $setores = $result->fetch_all(MYSQLI_ASSOC);
+    $stmt->execute();
+    $setores = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
     $setores = [];
     $error = $e->getMessage();

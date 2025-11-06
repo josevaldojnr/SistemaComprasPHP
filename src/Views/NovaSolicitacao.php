@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . '/../Controllers/ProdutoController.php';
-require_once __DIR__ . '/../Models/Produto.php';
-$products = ProdutoController::getAllProducts();
+
+$produtoController = new ProdutoController();
+$produtos = $produtoController->getAllProducts(); 
 ?>
 <h1 class="text-2xl font-semibold mb-6 text-gray-900">Nova Solicitação</h1>
 
@@ -32,32 +33,34 @@ $products = ProdutoController::getAllProducts();
       </select>
     </div>
   
-  <div>
-    <label class="block text-sm font-medium text-gray-600 mb-1">Descrição</label>
-    <textarea name="descricao" rows="3" placeholder="Detalhe a solicitação..."
-      class="block w-full rounded-md border border-gray-300 text-sm py-2 px-3
-             focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"></textarea>
+    <div>
+      <label class="block text-sm font-medium text-gray-600 mb-1">Descrição</label>
+      <textarea name="descricao" rows="3" placeholder="Detalhe a solicitação..."
+        class="block w-full rounded-md border border-gray-300 text-sm py-2 px-3
+               focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"></textarea>
+    </div>
   </div>
-</div>
 
- <div class="border-t border-gray-200 pt-6">
+  <div class="border-t border-gray-200 pt-6">
     <label class="block text-sm font-medium text-gray-600 mb-1">Carrinho</label>
-    <table class ="min-w-full divide-y divide-gray-200 border">
-      
-      <th>Produto</th>
-      <th>Preço Unitário</th>
-
-      <tbody id="carrinho-itens">
-    <?php if (!empty($products)): ?>
-      <?php foreach ($products as $row): ?>
+    <table class="min-w-full divide-y divide-gray-200 border">
+      <thead>
         <tr>
-          <td><?= htmlspecialchars($row->name) ?></td>
-          <td>R$<?= number_format($row->price, 2, ',', '.') ?></td>
+          <th>Produto</th>
+          <th>Preço Unitário</th>
+        </tr>
+      </thead>
+      <tbody id="carrinho-itens">
+    <?php if (!empty($produtos)): ?> 
+      <?php foreach ($produtos as $produto): ?>
+        <tr class="hover:bg-gray-100 cursor-pointer"> <!-- Add hover and cursor classes here -->
+          <td class="py-3 px-4 whitespace-nowrap"><?= htmlspecialchars($produto->getName()) ?></td>  <!-- Use getter method -->
+          <td class="py-3 px-4 whitespace-nowrap">R$<?= number_format($produto->getPrice(), 2, ',', '.') ?></td>  <!-- Use getter method -->
         </tr>
       <?php endforeach; ?>
     <?php else: ?>
       <tr>
-        <td colspan="3" style="text-align:center;">Nenhuma produto econtrado</td>
+        <td colspan="2" style="text-align:center;">Nenhum produto encontrado</td>
       </tr>
     <?php endif; ?>
       </tbody>
@@ -74,7 +77,4 @@ $products = ProdutoController::getAllProducts();
       Salvar
     </button>
   </div>
-
-   
-
 </form>

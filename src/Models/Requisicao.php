@@ -20,7 +20,7 @@ require_once __DIR__ . '/User.php';
 
          public function __construct($queryResult=null, User $user=null) {
             if(!is_array($queryResult)) {
-                $this->id = 0;
+                $this->id = 0 ;
                 $this->requestor_id = $user->id;
                 $this->pricing_id = 0;
                 $this->purchasing_id = 0;
@@ -65,10 +65,10 @@ require_once __DIR__ . '/User.php';
                                     JOIN users u ON r.requestor_id = u.id");
 
         $requests=[];
-        while ($row = $result->fetch_assoc()){
-            $requests[] = new Requisicao($row);
+        while ($row = $result->fetch(PDO::FETCH_ASSOC)) { // Fetch one row at a time
+            $requests[] = new Requisicao($row); // Pass the single row to the constructor
         }
-        $connection->close();
+        $connection = null; // Close connection
         return $requests;
     }
 
@@ -156,12 +156,16 @@ public function addProdutoToRequisicao($requisicaoId, $produtoId, $quantidade, $
 {
     $db = new DatabaseController();
     $connection = $db->getConnection();
-    $sql = "INSERT INTO requisicao_produtos (requisicao_id, produto_id, quantidade, subtotal)
-            VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO requisicao_produtos (requisicao_id, produto_id, quantidade, subtotal) VALUES (:requisicao_id, :produto_id, :quantidade, :subtotal)";
     $statement = $connection->prepare($sql);
-    $statement->bind_param('iiif', $requisicaoId, $produtoId, $quantidade, $subtotal);
+    
+    $statement->bindValue(':requisicao_id', $requisicaoId, PDO::PARAM_INT);
+    $statement->bindValue(':produto_id', $produtoId, PDO::PARAM_INT);
+    $statement->bindValue(':quantidade', $quantidade, PDO::PARAM_INT);
+    $statement->bindValue(':subtotal', $subtotal, PDO::PARAM_STR); // Assuming subtotal is a float or string
+    
     $statement->execute();
-    $connection->close();
+    $connection = null;
 }
 }
 

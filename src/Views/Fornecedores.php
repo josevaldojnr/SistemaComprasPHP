@@ -5,11 +5,19 @@ if (empty($_SESSION['user'])) {
     exit;
 }
 
-$fornecedores = [
-  ["id" => 1, "razao" => "Fornecedor A Ltda", "fantasia" => "Fornecedor A", "email" => "contato@fornecedora.com"],
-  ["id" => 2, "razao" => "Fornecedor B S/A", "fantasia" => "Fornecedor B", "email" => "vendas@fornecedorb.com"],
-  ["id" => 3, "razao" => "Comercial C Ltda", "fantasia" => "Comercial C", "email" => "suporte@comercialc.com"],
-];
+require_once __DIR__ . '/../Controllers/DatabaseController.php';
+
+$db = new DatabaseController();
+$conn = $db->getConnection();
+
+try {
+    $stmt = $conn->prepare("SELECT * FROM fornecedores");
+    $stmt->execute();
+    $fornecedores = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    $fornecedores = [];
+    $error = $e->getMessage();
+}
 ?>
 
 <div class="bg-white shadow-md rounded-lg p-6">
@@ -39,15 +47,15 @@ $fornecedores = [
             <td class="px-6 py-4"><?= htmlspecialchars($f['fantasia']) ?></td>
             <td class="px-6 py-4"><?= htmlspecialchars($f['email']) ?></td>
             <td class="px-6 py-4 flex gap-2">
-              <a href="/itens/edit?id=<?= $item['id'] ?>"
+              <a href="/fornecedores/edit?id=<?= $f['id'] ?>"
                 class="px-3 py-1 bg-blue-500 text-white text-sm rounded-full hover:bg-blue-600 transition">
                 Editar
               </a>
-              <a href="/itens/delete?id=<?= $item['id'] ?>"
+              <a href="/fornecedores/delete?id=<?= $f['id'] ?>"
                 class="px-3 py-1 bg-red-500 text-white text-sm rounded-full hover:bg-red-600 transition">
                 Excluir
               </a>
-          </td>
+            </td>
           </tr>
         <?php endforeach; ?>
       </tbody>

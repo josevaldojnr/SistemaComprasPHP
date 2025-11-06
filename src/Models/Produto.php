@@ -1,38 +1,24 @@
 <?php 
 class Produto {
-    public int $id;
-    public string $name;
-    public float $price;
-    public int $stock;
+    private int $id;
+    private string $name;
+    private float $price;
 
-    public function __construct($queryResult=null) {
-        if(!is_array($queryResult)) {
-            $this->id = 0;
-            $this->name = '';
-            $this->price = 0.0;
-            return;
-        }
-        $this->id = $queryResult['id'];
-        $this->name = $queryResult['nome'];
-        $this->price = $queryResult['preco'];
-      
+    public function __construct(array $data) {
+        $this->id = $data['id'] ?? 0; 
+        $this->name = $data['nome'] ?? ''; 
+        $this->price = $data['preco'] ?? 0.0; 
+    }
+    public function getId(): int {
+        return $this->id;
     }
 
-    public function isInStock(): bool {
-        return $this->stock > 0;
+    public function getName(): string {
+        return $this->name;
     }
 
-    public function reduceStock(int $amount): void {
-        if ($this->isInStock() === false ) {
-            throw new Exception("Fora de Estoque");
-        }
-        $this->stock -= $amount;
+    public function getPrice(): float {
+        return $this->price;
     }
-
-    public function increaseStock(int $amount): void {
-        $this->stock += $amount;
-    }
-
 }
-
 ?>

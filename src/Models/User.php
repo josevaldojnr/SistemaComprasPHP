@@ -80,5 +80,13 @@ require_once __DIR__ . '/../Controllers/DatabaseController.php';
             return false;
         }
 
+        public static function getAll() {
+            $dbController = new DatabaseController();
+            $conn = $dbController->getConnection();
+            $query = "SELECT * FROM users";
+            $stmt = $conn->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
 ?>

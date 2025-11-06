@@ -2,7 +2,11 @@
 require_once __DIR__ . '/../Models/Requisicao.php';
 require_once __DIR__ . '/DatabaseController.php';
     class RequisicaoController {
+        private $dbController;
 
+        public function __construct() {
+            $this->dbController = new DatabaseController();
+        }
 
         public function openRequest(User $user, Requisicao $request): void {
             $db = new DatabaseController();
@@ -136,6 +140,13 @@ require_once __DIR__ . '/DatabaseController.php';
             
         }
 
+        public function getAllRequisicoes() {
+            $conn = $this->dbController->getConnection();
+            $query = "SELECT * FROM requisicoes";
+            $stmt = $conn->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
 
 

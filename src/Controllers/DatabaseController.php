@@ -1,35 +1,31 @@
 <?php
 class DatabaseController {
-    private $dbConnection;
-    private $host = '127.0.0.0:3306';
-    private $username='root';
-    private $password='';
-    private $dbname='sistema_compras';
+    private $host = '127.0.0.1';
+    private $port = '3306';
+    private $username = 'root';
+    private $password = '';
+    private $dbname = 'sistema_compras';
+    public $conn;
 
     public function __construct() {
-        $this->dbConnection = new mysqli($this->host, $this->username, $this->password, $this->dbname);
-        if ($this->dbConnection->connect_error) {
-            throw new Exception("Connection failed: " . $this->dbConnection->connect_error);
-        }
+        $this->getConnection();
     }
 
     public function getConnection() {
-        return $this->dbConnection;
+        $this->conn = null;
+
+        try {
+            $this->conn = new PDO("mysql:host={$this->host};port={$this->port};dbname={$this->dbname}", $this->username, $this->password);
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            echo "Connection error: " . $e->getMessage();
+        }
+
+        return $this->conn;
     }
 
     public function closeConnection() {
-        $this->dbConnection->close();
-    }
-
-    public function executeQuery($query) {
-        $result = $this->dbConnection->query($query);
-        if ($this->dbConnection->error) {
-            throw new Exception("Error: " . $this->dbConnection->error);
-        }
-        if($result->num_rows === 0) {
-           throw new Exception("No Results Found");
-        }
-        return $result;
+        $this->conn = null;
     }
 }
 ?>

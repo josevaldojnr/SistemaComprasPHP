@@ -12,35 +12,28 @@ if (!isset($_GET['id'])) {
 
 $id = intval($_GET['id']);
 
-$resultUser = $db->executeQuery("SELECT * FROM users WHERE id = $id LIMIT 1");
-if (!$resultUser) {
-    exit('Erro na consulta do usuário.');
-}
+try {
+  
+    $stmt = $db->getConnection()->prepare("SELECT * FROM users WHERE id = :id LIMIT 1");
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$user = $resultUser->fetch_assoc();
-if (!$user) {
-    exit('Usuário não encontrado.');
-}
+    if (!$user) {
+        exit('Usuário não encontrado.');
+    }
 
-$resultRoles = $db->executeQuery("SELECT id, name FROM roles ORDER BY name");
-if (!$resultRoles) {
-    exit('Erro na consulta das funções.');
-}
+  
+    $stmt = $db->getConnection()->prepare("SELECT id, name FROM roles ORDER BY name");
+    $stmt->execute();
+    $roles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Converte resultado das roles em array de arrays
-$roles = [];
-while ($row = $resultRoles->fetch_assoc()) {
-    $roles[] = $row;
-}
-
-$resultSetores = $db->executeQuery("SELECT id, nome FROM setores ORDER BY nome");
-if (!$resultSetores) {
-    exit('Erro na consulta dos setores.');
-}
-
-$setores = [];
-while ($row = $resultSetores->fetch_assoc()) {
-    $setores[] = $row;
+  
+    $stmt = $db->getConnection()->prepare("SELECT id, nome FROM setores ORDER BY nome");
+    $stmt->execute();
+    $setores = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    exit('Erro na consulta: ' . $e->getMessage());
 }
 ?>
 
