@@ -44,9 +44,6 @@ $view = $view ?? null;
              class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Nova Solicitação</a>
           <a href="/minhas-solicitacoes"
              class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Minhas Solicitações</a>
-          <a href="/acompanhamento"
-             class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Acompanhamento</a>
-        </div>
       </div>
 
       <div x-data="{ open: false }">
@@ -76,14 +73,8 @@ $view = $view ?? null;
           </svg>
         </button>
         <div x-show="open" x-transition class="ml-4 mt-1 space-y-1">
-          <a href="/setores"
-             class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Setores</a>
           <a href="/itens"
-             class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Itens</a>
-          <a href="/fornecedores"
-             class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Fornecedores</a>
-          <a href="/categorias"
-             class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Categorias</a>
+             class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Produtos</a>
         </div>
       </div>
 

@@ -18,8 +18,8 @@ CREATE TABLE users (
   name varchar(120) NOT NULL,
   email varchar(160) NOT NULL,
   password varchar(255) NOT NULL,
+  setor VARCHAR,
   role_id int NOT NULL,
-  setor_id bigint DEFAULT NULL,
   is_active tinyint(1) NOT NULL DEFAULT '1',
   created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
@@ -27,8 +27,7 @@ CREATE TABLE users (
   KEY fk_users_role (role_id),
   KEY fk_users_setor (setor_id),
   CONSTRAINT fk_users_role FOREIGN KEY (role_id) REFERENCES roles (id),
-  CONSTRAINT fk_users_setor FOREIGN KEY (setor_id) REFERENCES setores (id)
-);
+ );
 
 CREATE TABLE categorias (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -83,25 +82,6 @@ INSERT INTO produtos (nome, preco, categoria_id) VALUES
   ('Notebook', 5000.00, 2),
   ('Roteador', 300.00, 2);
 
-CREATE TABLE `setores` (
-  id bigint NOT NULL AUTO_INCREMENT,
-  nome varchar(120) NOT NULL,
-  deleted_at timestamp NULL DEFAULT NULL,
-  created_at timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  teto_gestor decimal(15,2) NOT NULL DEFAULT '0.00',
-  teto_diretoria decimal(15,2) NOT NULL DEFAULT '0.00',
-  user_responsavel_id bigint DEFAULT NULL,
-  PRIMARY KEY (id),
-  KEY fk_setores_user_responsavel (user_responsavel_id),
-  CONSTRAINT fk_setores_user_responsavel FOREIGN KEY (user_responsavel_id) REFERENCES users (id)
-);
-
-INSERT INTO setores (nome) VALUES
-  ('Produção'),
-  ('Logística'),
-  ('Administrativo'),
-  ('TI');
 
 
 CREATE TABLE requisicao (
@@ -112,23 +92,22 @@ CREATE TABLE requisicao (
     manager_id BIGINT NULL,
     description TEXT NULL,
     total_cost DECIMAL(7,2),
-    setor_id BIGINT NOT NULL,
+    setor VARCHAR NOT NULL,
     status_id INT NULL,
     deleted_at TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_requisicao_setor FOREIGN KEY (setor_id) REFERENCES setores(id),
     CONSTRAINT fk_requisicao_requestor FOREIGN KEY (requestor_id) REFERENCES users(id),
     CONSTRAINT fk_requisicao_pricing FOREIGN KEY (pricing_id) REFERENCES users(id),
     CONSTRAINT fk_requisicao_buyer FOREIGN KEY (buyer_id) REFERENCES users(id),
     CONSTRAINT fk_requisicao_manager FOREIGN KEY (manager_id) REFERENCES users(id)
 );
 
-INSERT INTO requisicao (requestor_id, total_cost, setor_id, status_id)
+INSERT INTO requisicao (requestor_id, total_cost, setor, status_id)
 VALUES
-  (1, 1000.00, 1, 1),
-  (1, 500.00, 2, 1),
-  (1, 2000.00, 3, 1);
+  (1, 1000.00, 'Administração', 1),
+  (1, 500.00, 'TI' ,1),
+  (1, 2000.00, 'TI', 1);
 
 
 CREATE TABLE requisicao_produtos (
@@ -152,15 +131,6 @@ VALUES
   (3, 5, 2, 1000.00),
   (3, 6, 50, 25.00);
 
-
-CREATE TABLE fornecedores (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    razao_social VARCHAR(255) NOT NULL,
-    cnpj VARCHAR(20) NOT NULL,
-    deleted_at TIMESTAMP NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
 
 
 
