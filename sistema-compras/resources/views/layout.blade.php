@@ -28,10 +28,10 @@
     <!-- MENU -->
     <nav class="flex-1 p-4 space-y-2">
 
-      <a href="{{ route('dashboard') }}"
-         class="block px-3 py-2 rounded-md text-gray-700 hover:bg-indigo-100">
-         Dashboard
-      </a>
+    <a href="{{ route('dashboard') }}"
+      class="block px-3 py-2 rounded-md text-gray-700 hover:bg-indigo-100">
+      Dashboard
+    </a>
 
       <!-- Solicitações -->
       <div x-data="{ open: false }">
@@ -45,25 +45,8 @@
         </button>
 
         <div x-show="open" x-transition class="ml-4 mt-1 space-y-1">
-          <a href="/nova-solicitacao" class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Nova Solicitação</a>
-          <a href="/minhas-solicitacoes" class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Minhas Solicitações</a>
-        </div>
-      </div>
-
-      <!-- Compras -->
-      <div x-data="{ open: false }">
-        <button @click="open = !open"
-          class="w-full flex justify-between items-center px-3 py-2 rounded-md text-gray-700 hover:bg-indigo-100">
-          Compras
-          <svg :class="open ? 'rotate-90' : ''" class="h-4 w-4 transform transition-transform"
-               fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-          </svg>
-        </button>
-
-        <div x-show="open" x-transition class="ml-4 mt-1 space-y-1">
-          <a href="/solicitacoes-compra" class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Solicitações de Compra</a>
-          <a href="/pedidos-compra" class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Pedidos de Compra</a>
+          <a href="{{ route('requisitions.create') }}" class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Nova Solicitação</a>
+          <a href="{{ route('requisitions.index') }}" class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Minhas Solicitações</a>
         </div>
       </div>
 
@@ -79,7 +62,9 @@
         </button>
 
         <div x-show="open" x-transition class="ml-4 mt-1 space-y-1">
-          <a href="/itens" class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Produtos</a>
+          <a href="{{ route('products.index') }}" class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Produtos</a>
+          <a href="{{ route('categories.index') }}" class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Categorias</a>
+          <a href="{{ route('sectors.index') }}" class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Setores</a>
         </div>
       </div>
 
@@ -95,7 +80,7 @@
         </button>
 
         <div x-show="open" x-transition class="ml-4 mt-1 space-y-1">
-          <a href="/users" class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Usuários</a>
+          <a href="{{ route('users.index') }}" class="block px-3 py-1 text-sm text-gray-600 hover:text-indigo-600">Usuários</a>
         </div>
       </div>
 
@@ -118,4 +103,5 @@
   </main>
 
 </body>
-</html>
+</html><!doctype html>
+

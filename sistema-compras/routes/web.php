@@ -36,4 +36,16 @@ Route::middleware('auth')->group(function () {
     
 
     Route::get('/api/users', [UserController::class, 'getAllUsers'])->name('api.users');
+
+    // Products
+    Route::resource('products', App\Http\Controllers\ProdutoController::class)->middleware('auth');
+
+    // Sectors
+    Route::resource('sectors', App\Http\Controllers\SectorController::class)->except(['show'])->middleware('auth');
+
+    // Categories
+    Route::resource('categories', App\Http\Controllers\CategoryController::class)->except(['show'])->middleware('auth');
+
+    // Requisitions
+    Route::resource('requisitions', App\Http\Controllers\RequisitionController::class)->only(['index','create','store','show'])->middleware('auth');
 });

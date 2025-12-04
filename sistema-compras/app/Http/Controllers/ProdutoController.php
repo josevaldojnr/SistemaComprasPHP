@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Product;
+use App\Http\Requests\StoreProductRequest;
 
 class ProdutoController extends Controller
 {
@@ -11,7 +13,11 @@ class ProdutoController extends Controller
      */
     public function index()
     {
-        //
+        $produtos = Product::paginate(20);
+    // You may need to also pass $categorias and $itens if used in the view
+    $categorias = \App\Models\Category::all();
+    $itens = Product::with('categoria')->get();
+    return view('itens', compact('itens', 'categorias'));
     }
 
     /**
@@ -19,19 +25,15 @@ class ProdutoController extends Controller
      */
     public function create()
     {
+        return view('products.create');
     }
-
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $produto = Product::create([
-            'nome' => $request->nome,
-            'preco' => $request->preco,
-        ]);
-        return redirect()->back();
-      
+        Product::create($request->validated());
+        return redirect()->route('products.index');
     }
 
     /**
@@ -39,7 +41,8 @@ class ProdutoController extends Controller
      */
     public function show(string $id)
     {
-        
+        $produto = Product::findOrFail($id);
+        return view('products.show', compact('produto'));
     }
 
     /**
@@ -47,7 +50,8 @@ class ProdutoController extends Controller
      */
     public function edit(string $id)
     {
-
+        $produto = Product::findOrFail($id);
+        return view('products.edit', compact('produto'));
     }
 
     /**
@@ -55,12 +59,9 @@ class ProdutoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $produto = Product::findorFail($id);
-        $produto->update([
-            'nome' => $request->nome,
-            'preco' => $request->preco,
-        ]);
-           
+        $produto = Product::findOrFail($id);
+        $produto->update($request->only(['nome', 'preco', 'categoria_id']));
+        return redirect()->route('products.show', $produto->id);
     }
 
     /**
@@ -68,6 +69,8 @@ class ProdutoController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $produto = Product::findOrFail($id);
+        $produto->delete();
+        return redirect()->route('products.index');
     }
 }
