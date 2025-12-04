@@ -51,10 +51,11 @@
                 </tr>
             </thead>
             <tbody id="selected-products">
-                <!-- Os produtos selecionados serão adicionados aqui -->
+                <!-- Produtos selecionados serão renderizados via JS -->
             </tbody>
         </table>
-        <h4 class="mt-4">Total: R$ <span id="total">0,00</span></h4>
+    <h4 class="mt-4">Total: R$ <span id="total">0,00</span></h4>
+    <input type="hidden" name="products_json" id="products-json">
     </div>
   </div>
 
@@ -66,82 +67,89 @@
 </form>
 
 <script>
+    // Array to hold selected products
+    let selectedProducts = [];
+
+    // Add product to array or update quantity if already exists
     document.querySelectorAll('.add-product').forEach(button => {
         button.addEventListener('click', function() {
             const productItem = this.parentElement;
             const productId = productItem.getAttribute('data-id');
             const productPrice = parseFloat(productItem.getAttribute('data-price'));
-            const productName = productItem.textContent.trim();
+            const productName = productItem.childNodes[0].textContent.trim();
 
-            const selectedProductsTable = document.getElementById('selected-products');
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${productName}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <input type='number' value='1' min='1' class='quantity' data-id='${productId}' data-price='${productPrice}'>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">R$ ${productPrice.toFixed(2).replace('.', ',')}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    R$ <span class='subtotal'>${productPrice.toFixed(2).replace('.', ',')}</span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button type='button' class='remove-product text-indigo-600 hover:text-indigo-900'>Remover</button>
-                </td>
-            `;
-
-            selectedProductsTable.appendChild(newRow);
-            updateTotal();
-
-            newRow.querySelector('.remove-product').addEventListener('click', function() {
-                selectedProductsTable.removeChild(newRow);
-                updateTotal();
-            });
-
-            newRow.querySelector('.quantity').addEventListener('input', function() {
-                const quantity = parseInt(this.value) || 0;
-                const subtotal = (quantity * productPrice).toFixed(2);
-                newRow.querySelector('.subtotal').textContent = subtotal.replace('.', ',');
-                updateTotal();
-            });
+            let existing = selectedProducts.find(p => p.id === productId);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                selectedProducts.push({
+                    id: productId,
+                    name: productName,
+                    price: productPrice,
+                    quantity: 1
+                });
+            }
+            renderSelectedProducts();
         });
     });
 
+    // Render selected products table from array
+    function renderSelectedProducts() {
+        const tbody = document.getElementById('selected-products');
+        tbody.innerHTML = '';
+        selectedProducts.forEach((product, idx) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class=\"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900\">${product.name}</td>
+                <td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">
+                    <input type='number' value='${product.quantity}' min='1' class='quantity' data-idx='${idx}' style='width:60px;'>
+                </td>
+                <td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">R$ ${product.price.toFixed(2).replace('.', ',')}</td>
+                <td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">
+                    R$ <span class='subtotal'>${(product.price * product.quantity).toFixed(2).replace('.', ',')}</span>
+                </td>
+                <td class=\"px-6 py-4 whitespace-nowrap text-sm font-medium\">
+                    <button type='button' class='remove-product text-indigo-600 hover:text-indigo-900' data-idx='${idx}'>Remover</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+        updateTotal();
+        attachRowEvents();
+    }
+
+    // Attach events to quantity inputs and remove buttons
+    function attachRowEvents() {
+        document.querySelectorAll('.quantity').forEach(input => {
+            input.addEventListener('input', function() {
+                const idx = parseInt(this.getAttribute('data-idx'));
+                let val = parseInt(this.value) || 1;
+                selectedProducts[idx].quantity = val;
+                renderSelectedProducts();
+            });
+        });
+        document.querySelectorAll('.remove-product').forEach(button => {
+            button.addEventListener('click', function() {
+                const idx = parseInt(this.getAttribute('data-idx'));
+                selectedProducts.splice(idx, 1);
+                renderSelectedProducts();
+            });
+        });
+    }
+
+    // Update total value
     function updateTotal() {
         const totalElement = document.getElementById('total');
-        const subtotals = document.querySelectorAll('.subtotal');
         let total = 0;
-        subtotals.forEach(subtotal => {
-            total += parseFloat(subtotal.textContent.replace(',', '.'));
+        selectedProducts.forEach(product => {
+            total += product.price * product.quantity;
         });
         totalElement.textContent = total.toFixed(2).replace('.', ',');
     }
 
-    // Serialize selected products into hidden inputs before submit
+    // Serialize array as JSON before submit
     document.getElementById('requisition-form').addEventListener('submit', function(e) {
-        // Remove previous hidden inputs if any
-        document.querySelectorAll('.product-hidden-input').forEach(el => el.remove());
-        const selectedRows = document.querySelectorAll('#selected-products tr');
-        selectedRows.forEach((row, idx) => {
-            const quantityInput = row.querySelector('.quantity');
-            if (quantityInput) {
-                const productId = quantityInput.getAttribute('data-id');
-                const quantity = quantityInput.value;
-                // Create hidden inputs for each product
-                let inputId = document.createElement('input');
-                inputId.type = 'hidden';
-                inputId.name = `products[${idx}][id]`;
-                inputId.value = productId;
-                inputId.classList.add('product-hidden-input');
-                this.appendChild(inputId);
-
-                let inputQty = document.createElement('input');
-                inputQty.type = 'hidden';
-                inputQty.name = `products[${idx}][quantity]`;
-                inputQty.value = quantity;
-                inputQty.classList.add('product-hidden-input');
-                this.appendChild(inputQty);
-            }
-        });
+        document.getElementById('products-json').value = JSON.stringify(selectedProducts);
     });
 </script>
 @endsection

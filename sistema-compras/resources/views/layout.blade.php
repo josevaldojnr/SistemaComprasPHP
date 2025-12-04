@@ -103,5 +103,5 @@
   </main>
 
 </body>
-</html><!doctype html>
+</html>
 

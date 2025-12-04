@@ -14,12 +14,9 @@ class StoreRequisitionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'requestor_id' => 'nullable|integer|exists:users,id',
-            'description' => 'nullable|string',
-            'setor' => 'required|string|max:255',
-            'products' => 'required|array|min:1',
-            'products.*.produto_id' => 'required|integer|exists:produtos,id',
-            'products.*.quantidade' => 'required|integer|min:1',
+            'setor_id' => 'required|string',
+            'descricao' => 'nullable|string',
+            'products_json' => 'required|string',
         ];
     }
 }

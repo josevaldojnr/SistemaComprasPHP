@@ -48,4 +48,5 @@ Route::middleware('auth')->group(function () {
 
     // Requisitions
     Route::resource('requisitions', App\Http\Controllers\RequisitionController::class)->only(['index','create','store','show'])->middleware('auth');
+    Route::patch('/requisitions/{id}/update-status', [App\Http\Controllers\RequisitionController::class, 'updateStatus'])->name('requisitions.updateStatus')->middleware('auth');
 });
