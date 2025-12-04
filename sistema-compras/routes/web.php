@@ -47,6 +47,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('categories', App\Http\Controllers\CategoryController::class)->except(['show'])->middleware('auth');
 
     // Requisitions
-    Route::resource('requisitions', App\Http\Controllers\RequisitionController::class)->only(['index','create','store','show'])->middleware('auth');
+    Route::resource('requisitions', App\Http\Controllers\RequisitionController::class)->only(['index','create'])->middleware('auth');
     Route::patch('/requisitions/{id}/update-status', [App\Http\Controllers\RequisitionController::class, 'updateStatus'])->name('requisitions.updateStatus')->middleware('auth');
 });
