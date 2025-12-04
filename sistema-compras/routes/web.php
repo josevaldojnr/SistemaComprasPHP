@@ -46,7 +46,12 @@ Route::middleware('auth')->group(function () {
     // Categories
     Route::resource('categories', App\Http\Controllers\CategoryController::class)->except(['show'])->middleware('auth');
 
-    // Requisitions
+   // Requisitions
     Route::resource('requisitions', App\Http\Controllers\RequisitionController::class)->only(['index','create'])->middleware('auth');
+
+    Route::post('/requisitions', [App\Http\Controllers\RequisitionController::class, 'store'])
+        ->name('requisitions.store')
+        ->middleware('auth');
+
     Route::patch('/requisitions/{id}/update-status', [App\Http\Controllers\RequisitionController::class, 'updateStatus'])->name('requisitions.updateStatus')->middleware('auth');
 });
